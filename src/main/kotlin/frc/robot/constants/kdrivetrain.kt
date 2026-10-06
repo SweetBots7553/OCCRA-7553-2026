@@ -1,5 +1,6 @@
 package frc.robot.constants
 
+import com.revrobotics.spark.config.SparkBaseConfig
 import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.units.Units
 import edu.wpi.first.units.measure.Distance
@@ -21,6 +22,12 @@ val kTrainConfig: SparkMaxConfig
         
         // So a motor doesn't overclock
         config.smartCurrentLimit(45)
+        config.idleMode(SparkBaseConfig.IdleMode.kCoast)
+        
+        
+        
+        
+        
         
         config.closedLoop.pid(0.0, 0.0, 0.0) 
         

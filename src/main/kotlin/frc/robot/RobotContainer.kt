@@ -10,13 +10,14 @@ import frc.robot.subsystems.DriveTrain
 
 class RobotContainer {
     
+    // operator controllers
     private val driverController = CommandXboxController(kDriverPort)
     private val coDriverController = CommandXboxController(kCoDriverPort)  
     
+    // subsystems
     private val driveTrain = DriveTrain()
 
     init {
-        
         driveTrain.defaultCommand = driveTrain.drive(
             { deadbandOutput(driverController.leftX) },
             { deadbandOutput(driverController.leftY) },

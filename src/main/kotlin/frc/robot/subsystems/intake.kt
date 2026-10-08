@@ -1,5 +1,6 @@
 package frc.robot.subsystems
 
+<<<<<<< HEAD
 import com.revrobotics.spark.SparkBase
 import com.revrobotics.spark.SparkLowLevel
 import com.revrobotics.spark.SparkMax
@@ -52,4 +53,25 @@ class Intake : SubsystemBase()  {
             intake(0.0)
         })
     }
+=======
+import com.revrobotics.spark.SparkLowLevel.MotorType
+import com.revrobotics.spark.SparkMax
+import edu.wpi.first.wpilibj.PneumaticsModuleType
+import edu.wpi.first.wpilibj.Solenoid
+import edu.wpi.first.wpilibj2.command.SubsystemBase
+
+class Intake : SubsystemBase() {
+    
+    private val intakeMotor = SparkMax(0, MotorType.kBrushless)
+    
+    private val extender = Solenoid(PneumaticsModuleType.CTREPCM, 0)
+    private val extenderTwin = Solenoid(PneumaticsModuleType.CTREPCM, 0)
+    
+    init {
+        // intakeMotor.configure()
+    }
+    
+    
+    
+>>>>>>> refs/remotes/origin/main
 }

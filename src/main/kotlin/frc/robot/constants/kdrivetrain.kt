@@ -1,5 +1,6 @@
 package frc.robot.constants
 
+import com.revrobotics.spark.config.SparkBaseConfig
 import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.units.Units
 import edu.wpi.first.units.measure.Distance
@@ -9,9 +10,9 @@ import kotlin.math.PI
 const val kSpeedFactor = 10.0
 
 // this is the distance so It can calculate rotation. 
-val kTrackWidth: Distance = Distance.ofBaseUnits(490.0, Units.Millimeter)
-val kWheelDiameter: Distance = Distance.ofBaseUnits(0.0, Units.Millimeter)  
-const val kGearRatio = 1/1
+val kTrackWidth: Distance = Distance.ofBaseUnits(500.0, Units.Millimeter)
+private val kWheelDiameter: Distance = Distance.ofBaseUnits(154.4, Units.Millimeter)  
+private const val kGearRatio = 10.75
 
 // to be determined
 const val kFrontLeftNeo = 0
@@ -32,13 +33,13 @@ val kTrainConfig: SparkMaxConfig
             .pid(0.45, 0.0, 0.25) 
             .maxOutput(1.0)
         
-        
         val positionFactor = PI * kWheelDiameter.`in`(Units.Meters) / kGearRatio 
         
         config.encoder
             .positionConversionFactor(positionFactor)
             .velocityConversionFactor(positionFactor / 60) 
-        
+            
+        config.idleMode(SparkBaseConfig.IdleMode.kCoast)
         
         return config 
     }

@@ -7,6 +7,7 @@ import frc.robot.constants.deadbandOutput
 import frc.robot.constants.kCoDriverPort
 import frc.robot.constants.kDriverPort
 import frc.robot.subsystems.DriveTrain
+import frc.robot.subsystems.Intake
 
 class RobotContainer {
     
@@ -16,6 +17,7 @@ class RobotContainer {
     
     // subsystems
     private val driveTrain = DriveTrain()
+    private val intake = Intake()
 
     init {
         driveTrain.defaultCommand = driveTrain.drive(

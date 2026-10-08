@@ -4,6 +4,7 @@ import com.revrobotics.spark.config.SparkBaseConfig
 import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.units.Units
 import edu.wpi.first.units.measure.Distance
+<<<<<<< HEAD
 import kotlin.math.PI
 
 // m/s
@@ -13,6 +14,11 @@ const val kSpeedFactor = 10.0
 val kTrackWidth: Distance = Distance.ofBaseUnits(500.0, Units.Millimeter)
 private val kWheelDiameter: Distance = Distance.ofBaseUnits(154.4, Units.Millimeter)  
 private const val kGearRatio = 10.75
+=======
+
+// this is the distance so It can calculate rotation. 
+val kTrackWidth: Distance = Distance.ofBaseUnits(490.0, Units.Millimeter)
+>>>>>>> refs/remotes/origin/main
 
 // to be determined
 const val kFrontLeftNeo = 0
@@ -28,6 +34,7 @@ val kTrainConfig: SparkMaxConfig
         
         // So a motor doesn't overclock
         config.smartCurrentLimit(45)
+<<<<<<< HEAD
         
         config.closedLoop
             .pid(0.45, 0.0, 0.25) 
@@ -41,6 +48,18 @@ val kTrainConfig: SparkMaxConfig
             
         config.idleMode(SparkBaseConfig.IdleMode.kCoast)
         
+=======
+        config.idleMode(SparkBaseConfig.IdleMode.kCoast)
+        
+        
+        
+        
+        
+        
+        config.closedLoop.pid(0.0, 0.0, 0.0) 
+        
+        
+>>>>>>> refs/remotes/origin/main
         return config 
     }
     
@@ -50,6 +69,10 @@ val kBackLeftConfig: SparkMaxConfig
         
         config.follow(kFrontLeftNeo)
         
+<<<<<<< HEAD
+=======
+        
+>>>>>>> refs/remotes/origin/main
         return config
     }
     

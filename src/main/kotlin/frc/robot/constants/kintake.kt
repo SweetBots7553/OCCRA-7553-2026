@@ -1,6 +1,5 @@
 package frc.robot.constants
 
-import com.revrobotics.spark.SparkMax
 import com.revrobotics.spark.config.SparkBaseConfig
 import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.units.Units
@@ -10,7 +9,7 @@ import kotlin.math.PI
 // m/s
 const val kIntakeSpeed = 3.0
 
-const val kMotorCANID = 5
+const val kIntakeCANID = 5
 
 private val kIntakeWheelDiameter = Distance.ofBaseUnits(10.0, Units.Millimeter)
 private const val kGearRatio = 1/1
@@ -19,7 +18,7 @@ const val kPneumaticUnoChannel = 0
 const val kPneumaticDosChannel = 1
 
 // likely to be a sparkmax, but idk 
-val kMotorConfig: SparkMaxConfig
+val kIntakeConfig: SparkMaxConfig
     get() {
         val config = SparkMaxConfig()
         

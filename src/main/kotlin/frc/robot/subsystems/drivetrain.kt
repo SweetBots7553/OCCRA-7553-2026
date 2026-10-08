@@ -16,25 +16,13 @@ import frc.robot.constants.kBackRightConfig
 import frc.robot.constants.kBackRightNeo
 import frc.robot.constants.kFrontLeftNeo
 import frc.robot.constants.kFrontRightNeo
-<<<<<<< HEAD
+
 import frc.robot.constants.kSpeedFactor
-=======
->>>>>>> refs/remotes/origin/main
+
 import frc.robot.constants.kTrackWidth
 import frc.robot.constants.kTrainConfig
 
 class DriveTrain : SubsystemBase() {
-<<<<<<< HEAD
-    
-=======
-     
-    private val kinematics = DifferentialDriveKinematics(kTrackWidth)
->>>>>>> refs/remotes/origin/main
-    
-    private val frontLeftNeo: SparkMax = SparkMax(kFrontLeftNeo, MotorType.kBrushless)
-    private val frontRightNeo: SparkMax = SparkMax(kFrontRightNeo , MotorType.kBrushless)
-    private val backLeftNeo: SparkMax = SparkMax(kBackLeftNeo, MotorType.kBrushless)
-    private val backRightNeo: SparkMax = SparkMax(kBackRightNeo, MotorType.kBrushless)
     
     private val kinematics = DifferentialDriveKinematics(kTrackWidth)
     
@@ -68,15 +56,7 @@ class DriveTrain : SubsystemBase() {
         tab.addDouble("BackRightMotor") {
             backRightNeo.encoder.velocity
         }
-<<<<<<< HEAD
-=======
-    }
-    
-    fun drive(x: () -> Double, y: () -> Double, r: () -> Double): Command {
-        return run { 
-            drive(ChassisSpeeds(x(), y(), r()))
-        }
->>>>>>> refs/remotes/origin/main
+
     }
     
     fun drive(x: () -> Double, y: () -> Double, r: () -> Double): Command {
@@ -105,4 +85,5 @@ class DriveTrain : SubsystemBase() {
     fun stop() {
         drive(ChassisSpeeds())
     }
+   
 }

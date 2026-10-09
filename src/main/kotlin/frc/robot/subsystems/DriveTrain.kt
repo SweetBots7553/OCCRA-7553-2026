@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkMax
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics
+import edu.wpi.first.wpilibj.ADXRS450_Gyro
 import edu.wpi.first.wpilibj.Notifier
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.Command
@@ -38,11 +39,21 @@ class DriveTrain : SubsystemBase() {
     private val backLeftEncoder = backLeftNeo.encoder
     private val backRightEncoder = backRightNeo.encoder
 
-    private val currentPose = Pose2d()
+    
+    private val gyro = ADXRS450_Gyro()
+    
+    private var currentPose = Pose2d()
     private val resetPose = Pose2d()
 
     private val odometryNotifier = Notifier {
 
+        val frontLeftDistance = frontLeftEncoder.position
+        val frontRightDistance = frontRightEncoder.position
+        val backLeftDistance = backLeftEncoder.position
+        val backRightDistance = backRightEncoder.position
+        
+        val rotation = gyro.angle
+        
         zeroEncoders()
     }
 
@@ -112,6 +123,10 @@ class DriveTrain : SubsystemBase() {
         frontRightEncoder.position = z
         backLeftEncoder.position = z
         backRightEncoder.position = z
+    }
+    
+    public fun reset() {
+        currentPose = resetPose
     }
 
 

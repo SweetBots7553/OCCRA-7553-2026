@@ -2,6 +2,7 @@ package frc.robot.subsystems
 
 import com.revrobotics.PersistMode
 import com.revrobotics.ResetMode
+import com.revrobotics.spark.SparkBase
 import com.revrobotics.spark.SparkLowLevel
 import com.revrobotics.spark.SparkMax
 import edu.wpi.first.wpilibj2.command.SubsystemBase
@@ -20,5 +21,11 @@ class Shooter : SubsystemBase() {
         indexerMotor.configure(kIndexerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
     } 
     
+    fun shoot(speed: Double) {
+        shooterMotor.closedLoopController.setSetpoint(speed, SparkBase.ControlType.kVelocity)
+    }
     
+    fun index(speed: Double) {
+        indexerMotor.closedLoopController.setSetpoint(speed, SparkBase.ControlType.kVelocity)
+    }
 }

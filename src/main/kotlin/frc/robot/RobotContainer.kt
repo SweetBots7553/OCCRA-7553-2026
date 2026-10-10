@@ -39,11 +39,11 @@ class RobotContainer {
         // coDriverController.b().onTrue(intake.extend { false })
     }
 
-    val intakeCommand: Command
-        get() = Commands.parallel(intake.intake(), indexer.index { intake.intakeSpeed })
+    // val intakeCommand: Command
+    //     get() = Commands.parallel(intake.intake(), indexer.index { intake.intakeSpeed })
 
-    val shootCommand: Command
-        get() = Commands.parallel(shooter.shoot(), indexer.index { shooter.shooterSpeed })
+    // val shootCommand: Command
+    //     get() = Commands.parallel(shooter.shoot(), indexer.index { shooter.shooterSpeed })
 
 
     val autonomousCommand: Command

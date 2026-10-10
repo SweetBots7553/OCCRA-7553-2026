@@ -1,5 +1,7 @@
 package frc.robot.subsystems
 
+import com.pathplanner.lib.auto.AutoBuilder
+import com.pathplanner.lib.config.RobotConfig
 import com.revrobotics.PersistMode
 import com.revrobotics.ResetMode
 import com.revrobotics.spark.SparkBase
@@ -8,8 +10,8 @@ import com.revrobotics.spark.SparkMax
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry
 import edu.wpi.first.wpilibj.ADXRS450_Gyro
-import edu.wpi.first.wpilibj.Notifier
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
@@ -36,26 +38,20 @@ class DriveTrain : SubsystemBase() {
 
     private val frontLeftEncoder = frontLeftNeo.encoder
     private val frontRightEncoder = frontRightNeo.encoder
-    private val backLeftEncoder = backLeftNeo.encoder
-    private val backRightEncoder = backRightNeo.encoder
-
-    
     private val gyro = ADXRS450_Gyro()
-    
-    private var currentPose = Pose2d()
+
+
     private val resetPose = Pose2d()
 
-    private val odometryNotifier = Notifier {
+    var relativeSpeeds = ChassisSpeeds()
 
-        val frontLeftDistance = frontLeftEncoder.position
-        val frontRightDistance = frontRightEncoder.position
-        val backLeftDistance = backLeftEncoder.position
-        val backRightDistance = backRightEncoder.position
-        
-        val rotation = gyro.angle
-        
-        zeroEncoders()
-    }
+    val currentPose: Pose2d
+        get() {
+            return odometry.poseMeters
+        }
+
+    private val odometry =
+        DifferentialDriveOdometry(gyro.rotation2d, frontLeftEncoder.position, frontRightEncoder.position, resetPose)
 
     init {
         frontLeftNeo.configure(kTrainConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
@@ -63,7 +59,6 @@ class DriveTrain : SubsystemBase() {
         backLeftNeo.configure(kBackLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
         backRightNeo.configure(kBackRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
 
-        odometryNotifier.startPeriodic(0.1)
 
         // shuffel board stuff UwU
 
@@ -85,7 +80,50 @@ class DriveTrain : SubsystemBase() {
             backRightNeo.encoder.velocity
         }
 
-        val odoTab = Shuffleboard.getTab("Odometry")
+
+        val config = RobotConfig.fromGUISettings()
+
+
+        // AutoBuilder.configure(
+        //     { currentPose },
+        //     { resetPose },
+        //     { relativeSpeeds }, 
+        // )
+
+        //         // Load the RobotConfig from the GUI settings. You should probably
+        //         // store this in your Constants file
+        //         RobotConfig config;
+        //         try {
+        //             config = RobotConfig.fromGUISettings();
+        //         } catch (Exception e) {
+        //             // Handle exception as needed
+        //             e.printStackTrace();
+        //         }
+
+        //         // Configure AutoBuilder last
+        //         AutoBuilder.configure(
+        //             this::getPose, // Robot pose supplier
+        //             this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+        //             this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        //             (speeds, feedforwards
+        //         ) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+        //         new PPLTVController (0.02), // PPLTVController is the built in path following controller for differential drive trains
+        //         config, // The robot configuration
+        //         () -> {
+        //             // Boolean supplier that controls when the path will be mirrored for the red alliance
+        //             // This will flip the path being followed to the red side of the field.
+        //             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+        //             var alliance = DriverStation.getAlliance();
+        //             if (alliance.isPresent()) {
+        //                 return alliance.get() == DriverStation.Alliance.Red;
+        //             }
+        //             return false;
+        //         },
+        //         this // Reference to this subsystem to set requirements
+        //         );
+        //     }
+        // }
 
     }
 
@@ -110,24 +148,23 @@ class DriveTrain : SubsystemBase() {
 
         frontLeftNeo.closedLoopController.setSetpoint(leftSpeed, SparkBase.ControlType.kVelocity)
         frontRightNeo.closedLoopController.setSetpoint(rightSpeed, SparkBase.ControlType.kVelocity)
+
+        synchronized(relativeSpeeds) {
+            relativeSpeeds = speeds
+        }
     }
 
     fun stop() {
         drive(ChassisSpeeds())
     }
 
-    private fun zeroEncoders() {
-        val z = 0.0
+    fun reset() {
 
-        frontLeftEncoder.position = z
-        frontRightEncoder.position = z
-        backLeftEncoder.position = z
-        backRightEncoder.position = z
-    }
-    
-    public fun reset() {
-        currentPose = resetPose
     }
 
+
+    override fun periodic() {
+        odometry.update(gyro.rotation2d, frontLeftEncoder.position, frontRightEncoder.position)
+    }
 
 }

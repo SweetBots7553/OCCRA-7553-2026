@@ -3,9 +3,6 @@ package frc.robot.subsystems
 
 import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX
-import com.revrobotics.spark.SparkBase
-import com.revrobotics.spark.SparkLowLevel
-import com.revrobotics.spark.SparkMax
 import edu.wpi.first.wpilibj.PneumaticsModuleType
 import edu.wpi.first.wpilibj.Solenoid
 import edu.wpi.first.wpilibj2.command.Command
@@ -18,7 +15,7 @@ import frc.robot.constants.kPneumaticUnoChannel
 import java.util.concurrent.locks.ReentrantLock
 
 class Intake : SubsystemBase() {
-    
+
     private val intakeMotor = WPI_VictorSPX(kIntakeCANID)
 
     private val penumaticUno = Solenoid(PneumaticsModuleType.CTREPCM, kPneumaticUnoChannel)
@@ -29,7 +26,10 @@ class Intake : SubsystemBase() {
     init {
         intakeMotor.configAllSettings(kIntakeConfig)
     }
-    
+
+    val intakeSpeed: Double
+        get() = intakeMotor.get()
+
     fun extended(b: Boolean) {
         if (b == penumaticUno.get())
             return

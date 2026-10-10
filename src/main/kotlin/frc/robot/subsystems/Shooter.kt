@@ -17,6 +17,10 @@ class Shooter : SubsystemBase() {
 
     private val shooterMotor = SparkMax(kShooterMotorCANID, SparkLowLevel.MotorType.kBrushless)
 
+
+    val shooterSpeed: Double
+        get() = shooterMotor.get()
+
     init {
         shooterMotor.configure(kShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
     }

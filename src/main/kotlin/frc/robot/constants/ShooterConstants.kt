@@ -8,7 +8,7 @@ import kotlin.math.PI
 
 const val kShooterMotorCANID = 6
 
-// m/s
+// m/s 
 const val kShooterSpeed = 0.1
 private val kShooterWheelDiameter = Distance.ofBaseUnits(90.0, Units.Millimeter)
 

@@ -8,14 +8,15 @@ import edu.wpi.first.units.Units
 import edu.wpi.first.units.measure.Distance
 import kotlin.math.PI
 
-// m/s
+// dutycycle
 const val kIntakeSpeed = 0.1
-
 const val kIntakeCANID = 5
 
 val kIntakeConfig: VictorSPXConfiguration 
     get() {
         val config = VictorSPXConfiguration()
+        
+        
         
         return config
     }

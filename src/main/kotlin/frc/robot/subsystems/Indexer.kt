@@ -16,7 +16,7 @@ class Indexer : SubsystemBase() {
     }
 
     fun index(speed: Double) {
-        indexerMotor.set(ControlMode.Velocity, speed)
+        indexerMotor.set(ControlMode.PercentOutput, speed )
     }
 
     fun index(speed: () -> Double): Command {

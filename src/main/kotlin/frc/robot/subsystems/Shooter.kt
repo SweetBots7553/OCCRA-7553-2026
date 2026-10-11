@@ -15,15 +15,12 @@ class Shooter : SubsystemBase() {
 
     private val shooterMotor = SparkMax(kShooterMotorCANID, SparkLowLevel.MotorType.kBrushless)
 
-    val shooterSpeedDutyCycle: Double
-        get() = shooterMotor.get()
-
     init {
         shooterMotor.configure(kShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
     }
 
     fun shoot(speed: Double) {
-        shooterMotor.closedLoopController.setSetpoint(speed, SparkBase.ControlType.kVelocity)
+        shooterMotor.closedLoopController.setSetpoint(speed, SparkBase.ControlType.kDutyCycle)
     }
 
     fun shoot(): Command {

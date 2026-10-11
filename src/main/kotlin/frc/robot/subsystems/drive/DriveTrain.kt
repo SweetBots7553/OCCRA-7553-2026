@@ -1,18 +1,14 @@
 package frc.robot.subsystems
 
-import com.pathplanner.lib.auto.AutoBuilder
-import com.pathplanner.lib.config.RobotConfig
 import com.revrobotics.PersistMode
 import com.revrobotics.ResetMode
 import com.revrobotics.spark.SparkBase
 import com.revrobotics.spark.SparkLowLevel.MotorType
 import com.revrobotics.spark.SparkMax
-import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry
-import edu.wpi.first.wpilibj.ADXRS450_Gyro
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.constants.kBackLeftConfig
@@ -35,54 +31,14 @@ class DriveTrain : SubsystemBase() {
     private val frontRightNeo: SparkMax = SparkMax(kFrontRightNeo, MotorType.kBrushless)
     private val backLeftNeo: SparkMax = SparkMax(kBackLeftNeo, MotorType.kBrushless)
     private val backRightNeo: SparkMax = SparkMax(kBackRightNeo, MotorType.kBrushless)
-
-    private val frontLeftEncoder = frontLeftNeo.encoder
-    private val frontRightEncoder = frontRightNeo.encoder
-    private val gyro = ADXRS450_Gyro()
-
-
-    private val resetPose = Pose2d()
-
-    var relativeSpeeds = ChassisSpeeds()
-
-    val currentPose: Pose2d
-        get() {
-            return odometry.poseMeters
-        }
-
-    private val odometry =
-        DifferentialDriveOdometry(gyro.rotation2d, frontLeftEncoder.position, frontRightEncoder.position, resetPose)
+    
+    private val odometry = Odometry(this, frontLeftNeo, frontRightNeo, kinematics)
 
     init {
         frontLeftNeo.configure(kTrainConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
         frontRightNeo.configure(kTrainConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
         backLeftNeo.configure(kBackLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
         backRightNeo.configure(kBackRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
-
-
-        // shuffel board stuff UwU
-
-        val driveTab = Shuffleboard.getTab("DriveTrain")
-
-        driveTab.addDouble("FrontLeftMotor") {
-            frontLeftNeo.encoder.velocity
-        }
-
-        driveTab.addDouble("FrontRightMotor") {
-            frontRightNeo.encoder.velocity
-        }
-
-        driveTab.addDouble("BackLeftMotor") {
-            backLeftNeo.encoder.velocity
-        }
-
-        driveTab.addDouble("BackRightMotor") {
-            backRightNeo.encoder.velocity
-        }
-
-
-        val config = RobotConfig.fromGUISettings()
-
     }
 
     fun drive(x: () -> Double, y: () -> Double, r: () -> Double): Command {
@@ -97,7 +53,6 @@ class DriveTrain : SubsystemBase() {
         }
     }
 
-
     fun drive(speeds: ChassisSpeeds) {
         val v = kinematics.toWheelSpeeds(speeds)
 
@@ -106,22 +61,9 @@ class DriveTrain : SubsystemBase() {
 
         frontLeftNeo.closedLoopController.setSetpoint(leftSpeed, SparkBase.ControlType.kVelocity)
         frontRightNeo.closedLoopController.setSetpoint(rightSpeed, SparkBase.ControlType.kVelocity)
-
-        synchronized(relativeSpeeds) {
-            relativeSpeeds = speeds
-        }
     }
 
     fun stop() {
         drive(ChassisSpeeds())
     }
-
-    fun reset() {
-
-    }
-
-    override fun periodic() {
-        odometry.update(gyro.rotation2d, frontLeftEncoder.position, frontRightEncoder.position)
-    }
-
 }

@@ -25,10 +25,7 @@ class Intake : SubsystemBase() {
     init {
         intakeMotor.configAllSettings(kIntakeConfig)
     }
-
-    val intakeSpeedDutyCycle: Double
-        get() = intakeMotor.get()
-
+    
     fun extended(b: Boolean) {
         if (b == penumaticUno.get())
             return
@@ -49,7 +46,7 @@ class Intake : SubsystemBase() {
     }
 
     fun intake(speed: Double) {
-        intakeMotor.set(ControlMode.Velocity, speed)
+        intakeMotor.set(ControlMode.PercentOutput, speed)
     }
 
     fun intake(v :() -> Double): Command {

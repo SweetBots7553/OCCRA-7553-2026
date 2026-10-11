@@ -70,6 +70,10 @@ class Odometry(
         )
     }
     
+    fun reset() {
+        odometry.resetPosition(gyro.rotation2d, wheelpositions, resetPose)
+    }
+    
     override fun periodic() {
         odometry.update(gyro.rotation2d, wheelpositions)
     }

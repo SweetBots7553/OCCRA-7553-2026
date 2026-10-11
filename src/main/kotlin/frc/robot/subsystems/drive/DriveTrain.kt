@@ -1,4 +1,4 @@
-package frc.robot.subsystems
+package frc.robot.subsystems.drive
 
 import com.revrobotics.PersistMode
 import com.revrobotics.ResetMode
@@ -7,8 +7,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType
 import com.revrobotics.spark.SparkMax
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.constants.kBackLeftConfig
@@ -32,8 +30,6 @@ class DriveTrain : SubsystemBase() {
     private val backLeftNeo: SparkMax = SparkMax(kBackLeftNeo, MotorType.kBrushless)
     private val backRightNeo: SparkMax = SparkMax(kBackRightNeo, MotorType.kBrushless)
     
-    private val odometry = Odometry(this, frontLeftNeo, frontRightNeo, kinematics)
-
     init {
         frontLeftNeo.configure(kTrainConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
         frontRightNeo.configure(kTrainConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)

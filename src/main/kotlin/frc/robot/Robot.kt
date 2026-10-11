@@ -30,7 +30,9 @@ class Robot : TimedRobot() {
 
     override fun autonomousPeriodic() {}
 
-    override fun autonomousExit() {}
+    override fun autonomousExit() {
+
+    }
 
     override fun teleopInit() {
         autonomousCommand?.cancel()

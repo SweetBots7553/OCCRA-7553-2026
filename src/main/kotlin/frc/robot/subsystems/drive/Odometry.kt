@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds
 import edu.wpi.first.wpilibj.ADXRS450_Gyro
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.constants.kPathController
 
@@ -69,6 +70,16 @@ class Odometry(
             {false}, 
             driveTrain
         )
+
+        val tab = Shuffleboard.getTab("Odometry")
+        
+        tab.addDouble("x") { currentPose.x }
+        tab.addDouble("y") { currentPose.y }
+        tab.addDouble("rotation-deg") { currentPose.rotation.degrees }
+        tab.addDouble("rotation-rad") { currentPose.rotation.radians }
+        
+        tab.addDouble("frontLeft-encoder-velocity") { frontLeftEncoder.velocity }
+        tab.addDouble("frontRight-encoder-velocity") { frontRightEncoder.velocity }
     }
     
     fun reset() {

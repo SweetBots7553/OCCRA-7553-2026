@@ -32,8 +32,8 @@ class RobotContainer {
         NamedCommands.registerCommand("Intake",  intakeCommand)
         NamedCommands.registerCommand("OutTake", outTakeCommand)
         NamedCommands.registerCommand("Shoot", shootCommand)
-        NamedCommands.registerCommand("Extend", intake.extend { true })
-        NamedCommands.registerCommand("UnExtend", intake.extend { false })
+        NamedCommands.registerCommand("Extend", extend)
+        NamedCommands.registerCommand("UnExtend", unextend)
     }
     
     // controls
@@ -55,6 +55,12 @@ class RobotContainer {
 
     private val shootCommand: Command
         get() = Commands.parallel(shooter.shoot(), indexer.index { kIntakeSpeed })
+        
+    private val extend: Command 
+        get() = intake.extend { true }
+        
+    private val unextend: Command 
+        get() = intake.extend { false }
         
     // auto
         

@@ -44,7 +44,6 @@ class RobotContainer {
             { deadbandOutput(driverController.leftY) },
             { deadbandOutput(driverController.rightX) }
         )
-        
     }
     // commands
     

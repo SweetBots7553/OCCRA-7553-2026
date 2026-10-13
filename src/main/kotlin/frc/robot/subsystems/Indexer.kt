@@ -15,7 +15,7 @@ class Indexer : SubsystemBase() {
         indexerMotor.configAllSettings(kIndexerConfig)
     }
 
-    fun index(dutycycle: Double) {
+    private fun index(dutycycle: Double) {
         indexerMotor.set(dutycycle)
     } 
 

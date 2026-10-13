@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX
 import edu.wpi.first.wpilibj.PneumaticsModuleType
 import edu.wpi.first.wpilibj.Solenoid
 import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.constants.kIntakeCANID
 import frc.robot.constants.kIntakeConfig
@@ -20,32 +21,41 @@ class Intake : SubsystemBase() {
     private val penumaticUno = Solenoid(PneumaticsModuleType.CTREPCM, kPneumaticUnoChannel)
     private val penumaticDos = Solenoid(PneumaticsModuleType.CTREPCM, kPneumaticDosChannel)
 
-    private val penumaticLock: ReentrantLock = ReentrantLock()
-
     init {
         intakeMotor.configAllSettings(kIntakeConfig)
     }
     
-    fun extended(b: Boolean) {
+    private fun unoextended(b: Boolean) {
         if (b == penumaticUno.get())
             return
-
-        // this just so you don't set it too fast
-        synchronized(penumaticLock) {
-            penumaticUno.set(b)
-            penumaticDos.set(b)
-
-            Thread.sleep(1)
-        }
+            
+        penumaticUno.set(b)
+    }
+    
+    private fun dosextended(b: Boolean) {
+        if (b == penumaticDos.get())
+            return
+        
+        penumaticDos.set(b)
     }
 
-    fun extend(b: () -> Boolean): Command {
+    private fun unoextend(b: () -> Boolean): Command {
         return runOnce {
-            extended(b())
+            unoextended(b())
         }
     }
+    
+    private fun dosextend(b: () -> Boolean): Command {
+        return runOnce { 
+            dosextended(b())
+        }
+    }
+    
+    fun extend(b: () -> Boolean): Command {
+        return Commands.parallel(unoextend(b), dosextend(b))
+    }
 
-    fun intake(dutycycle: Double) {
+    private fun intake(dutycycle: Double) {
         intakeMotor.set( dutycycle)
     }
 

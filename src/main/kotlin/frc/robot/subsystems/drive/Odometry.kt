@@ -27,11 +27,12 @@ class Odometry(
     private val resetPose = Pose2d()
         
     private val odometry =
-        DifferentialDriveOdometry(
+        DifferentialDriveOdometry (
             gyro.rotation2d, 
             frontLeftEncoder.position, 
             frontRightEncoder.position, 
-            resetPose)
+            resetPose
+        )
 
     val currentPose: Pose2d
         get() {
@@ -56,11 +57,11 @@ class Odometry(
     init {
         val config = RobotConfig.fromGUISettings()
         
-        AutoBuilder.configure(
+        AutoBuilder.configure (
             { currentPose }, 
             { resetPose }, 
             { chassisSpeeds },
-            {speeds: ChassisSpeeds, feedforward: DriveFeedforwards ->
+            {speeds: ChassisSpeeds, _: DriveFeedforwards ->
                 driveTrain.drive(speeds)
             },
             kPathController,

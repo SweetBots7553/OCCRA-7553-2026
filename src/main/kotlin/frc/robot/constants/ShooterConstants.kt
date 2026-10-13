@@ -1,21 +1,22 @@
 package frc.robot.constants
 
 import com.revrobotics.spark.config.SparkBaseConfig
+import com.revrobotics.spark.config.SparkFlexConfig
 import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.units.Units
 import edu.wpi.first.units.measure.Distance
 import kotlin.math.PI
 
-const val kShooterMotorCANID = 6
+const val kShooterMotorCANID = 33
 
 // m/s 
 const val kShooterSpeed = 0.1
 private val kShooterWheelDiameter = Distance.ofBaseUnits(90.0, Units.Millimeter)
 
 // likely to be a sparkmax, but idk 
-val kShooterConfig: SparkMaxConfig
+val kShooterConfig: SparkFlexConfig
     get() {
-        val config = SparkMaxConfig()
+        val config = SparkFlexConfig()
         
         config.smartCurrentLimit(45)
         

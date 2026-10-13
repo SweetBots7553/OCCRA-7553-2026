@@ -29,13 +29,13 @@ class RobotContainer {
 
     // pathplanner autos
     init {
-        NamedCommands.registerCommand("Intake",  intakeCommand)
+        NamedCommands.registerCommand("Intake", intakeCommand)
         NamedCommands.registerCommand("OutTake", outTakeCommand)
         NamedCommands.registerCommand("Shoot", shootCommand)
         NamedCommands.registerCommand("Extend", extend)
         NamedCommands.registerCommand("UnExtend", unextend)
     }
-    
+
     // controls
     init {
         // arcade control
@@ -46,37 +46,37 @@ class RobotContainer {
         )
     }
     // commands
-    
+
     private val intakeCommand: Command
         get() = Commands.parallel(intake.intake { kIntakeSpeed }, indexer.index { kIntakeSpeed })
-        
+
     private val outTakeCommand: Command
         get() = Commands.parallel(intake.intake { -kIntakeSpeed }, indexer.index { -kIntakeSpeed })
 
     private val shootCommand: Command
         get() = Commands.parallel(shooter.shoot(), indexer.index { kIntakeSpeed })
-        
-    private val extend: Command 
+
+    private val extend: Command
         get() = intake.extend { true }
-        
-    private val unextend: Command 
+
+    private val unextend: Command
         get() = intake.extend { false }
-        
+
     // auto
-        
-    private val autoChooser = SendableChooser<String>()     
-        
+
+    private val autoChooser = SendableChooser<String>()
+
     init {
         val tab = Shuffleboard.getTab("Auto")
-        
-        autoChooser.addOption("test", "test")        
-        
-        
+
+        autoChooser.addOption("test", "test")
+
+
         tab.add { autoChooser }
     }
-        
-    
+
+
     val autonomousCommand: Command
         get() = AutoBuilder.buildAuto(autoChooser.selected)
-        
+
 }

@@ -19,8 +19,8 @@ class Shooter : SubsystemBase() {
         shooterMotor.configure(kShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
     }
 
-    fun shoot(speed: Double) {
-        shooterMotor.closedLoopController.setSetpoint(speed, SparkBase.ControlType.kDutyCycle)
+    fun shoot(dutycycle: Double) {
+        shooterMotor.closedLoopController.setSetpoint(dutycycle, SparkBase.ControlType.kDutyCycle)
     }
 
     fun shoot(): Command {

@@ -45,13 +45,13 @@ class Intake : SubsystemBase() {
         }
     }
 
-    fun intake(speed: Double) {
-        intakeMotor.set(ControlMode.PercentOutput, speed)
+    fun intake(dutycycle: Double) {
+        intakeMotor.set( dutycycle)
     }
 
-    fun intake(v :() -> Double): Command {
+    fun intake(dutycycle :() -> Double): Command {
         return startEnd({
-            intake(v)
+            intake(dutycycle)
         }, {
             intake(0.0)
         })

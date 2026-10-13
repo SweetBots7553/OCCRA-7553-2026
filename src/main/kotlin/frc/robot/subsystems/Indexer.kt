@@ -15,13 +15,13 @@ class Indexer : SubsystemBase() {
         indexerMotor.configAllSettings(kIndexerConfig)
     }
 
-    fun index(speed: Double) {
-        indexerMotor.set(ControlMode.PercentOutput, speed )
-    }
+    fun index(dutycycle: Double) {
+        indexerMotor.set(dutycycle)
+    } 
 
-    fun index(speed: () -> Double): Command {
+    fun index(dutycycle: () -> Double): Command {
         return startEnd({
-            index(speed())
+            index(dutycycle())
         }, {
             index(0.0)
         })

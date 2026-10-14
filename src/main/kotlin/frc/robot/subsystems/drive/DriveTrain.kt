@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType
 import com.revrobotics.spark.SparkMax
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.constants.kBackLeftConfig
@@ -36,6 +37,15 @@ class DriveTrain : SubsystemBase() {
         frontRightNeo.configure(kTrainConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
         backLeftNeo.configure(kBackLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
         backRightNeo.configure(kBackRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
+        
+           
+        val chassisTab = Shuffleboard.getTab("Chassis")
+            
+        chassisTab.addDouble("front-left-motor") { frontLeftNeo.get() }
+        chassisTab.addDouble("front-right-motor") { frontRightNeo.get() }
+        chassisTab.addDouble("back-left-motor") { backLeftNeo.get() }
+        chassisTab.addDouble("back-right-motor") { backRightNeo.get() }
+        
     }
 
     fun drive(x: () -> Double, r: () -> Double): Command {

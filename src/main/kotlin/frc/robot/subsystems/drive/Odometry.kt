@@ -56,8 +56,11 @@ class Odometry(
         } 
             
     init {
-        val config = RobotConfig.fromGUISettings()
         
+        // disable holographic movement 
+        
+        val config = RobotConfig.fromGUISettings()
+                
         AutoBuilder.configure (
             { currentPose }, 
             { resetPose }, 
@@ -71,15 +74,15 @@ class Odometry(
             driveTrain
         )
 
-        val tab = Shuffleboard.getTab("Odometry")
+        val odometryTab = Shuffleboard.getTab("Odometry")
         
-        tab.addDouble("x") { currentPose.x }
-        tab.addDouble("y") { currentPose.y }
-        tab.addDouble("rotation-deg") { currentPose.rotation.degrees }
-        tab.addDouble("rotation-rad") { currentPose.rotation.radians }
+        odometryTab.addDouble("x") { currentPose.x }
+        odometryTab.addDouble("y") { currentPose.y }
+        odometryTab.addDouble("rotation-deg") { currentPose.rotation.degrees }
+        odometryTab.addDouble("rotation-rad") { currentPose.rotation.radians }
         
-        tab.addDouble("frontLeft-encoder-velocity") { frontLeftEncoder.velocity }
-        tab.addDouble("frontRight-encoder-velocity") { frontRightEncoder.velocity }
+        odometryTab.addDouble("frontLeft-encoder-velocity") { frontLeftEncoder.velocity }
+        odometryTab.addDouble("frontRight-encoder-velocity") { frontRightEncoder.velocity }
     }
     
     fun reset() {

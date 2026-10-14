@@ -38,13 +38,13 @@ class DriveTrain : SubsystemBase() {
         backRightNeo.configure(kBackRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
     }
 
-    fun drive(x: () -> Double, y: () -> Double, r: () -> Double): Command {
+    fun drive(x: () -> Double, r: () -> Double): Command {
         return run {
             drive(
                 ChassisSpeeds(
-                    x() * kSpeedFactor / 2,
-                    y() * kSpeedFactor / 2,
-                    r() * kSpeedFactor
+                    x() * kSpeedFactor,
+                    0.0,
+                    r() * kRotationSpeedFactor
                 )
             )
         }

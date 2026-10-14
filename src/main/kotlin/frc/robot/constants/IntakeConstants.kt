@@ -14,6 +14,6 @@ val kIntakeConfig: VictorSPXConfiguration
     }
 
 const val kPneumaticChannel = 0
-
+const val kPneumaticHubCANID = 10
 
 

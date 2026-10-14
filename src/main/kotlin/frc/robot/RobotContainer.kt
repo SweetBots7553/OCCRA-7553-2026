@@ -42,7 +42,6 @@ class RobotContainer {
         // arcade control
         driveTrain.defaultCommand = driveTrain.drive(
             { MathUtil.applyDeadband(driverController.rightX, kDeadbandThreshold) },
-            { MathUtil.applyDeadband(driverController.rightY, kDeadbandThreshold)},
             { MathUtil.applyDeadband(driverController.leftY, kDeadbandThreshold) }
         )
     }

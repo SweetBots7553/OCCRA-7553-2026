@@ -15,6 +15,7 @@ import frc.robot.constants.kBackRightConfig
 import frc.robot.constants.kBackRightNeo
 import frc.robot.constants.kFrontLeftNeo
 import frc.robot.constants.kFrontRightNeo
+import frc.robot.constants.kRotationSpeedFactor
 
 import frc.robot.constants.kSpeedFactor
 
@@ -41,8 +42,8 @@ class DriveTrain : SubsystemBase() {
         return run {
             drive(
                 ChassisSpeeds(
-                    x() * kSpeedFactor,
-                    y() * kSpeedFactor,
+                    x() * kSpeedFactor / 2,
+                    y() * kSpeedFactor / 2,
                     r() * kSpeedFactor
                 )
             )

@@ -47,9 +47,9 @@ class RobotContainer {
         )
     }
     // commands
-l
+
     // private val intakeCommand: Command
-    //     get() = intake.intake { kIntakeSpeed }.alongWith(indexer.index { kIntakeSpeed })
+    // //     get() = intake.intake { kIntakeSpeed }.alongWith(indexer.index { kIntakeSpeed })
 
     // private val outTakeCommand: Command
     //     get() = intake.intake { -kIntakeSpeed }.alongWith(indexer.index { -kIntakeSpeed })

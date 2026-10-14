@@ -8,6 +8,7 @@ import kotlin.math.PI
 
 // m/s
 const val kSpeedFactor = 10.0
+const val kRotationSpeedFactor = 10.0 / 250
 
 // this is the distance so It can calculate rotation. 
 val kTrackWidth: Distance = Units.Millimeter.of(500.0)

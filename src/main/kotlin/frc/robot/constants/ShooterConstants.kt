@@ -11,7 +11,7 @@ const val kShooterMotorCANID = 33
 
 // m/s 
 const val kShooterSpeed = 0.1
-private val kShooterWheelDiameter = Distance.ofBaseUnits(90.0, Units.Millimeter)
+private val kShooterWheelDiameter = Units.Millimeters.of(90.0)
 
 // likely to be a sparkmax, but idk 
 val kShooterConfig: SparkFlexConfig
@@ -22,7 +22,7 @@ val kShooterConfig: SparkFlexConfig
         
         config.closedLoop
             .maxOutput(1.0)
-            .pid(0.45, 0.0, 0.20) 
+            .pid(0.1, 0.0, 0.0) 
             
         val positionFactor = PI * kShooterWheelDiameter.`in`(Units.Meters) 
             

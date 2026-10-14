@@ -10,8 +10,8 @@ import kotlin.math.PI
 const val kSpeedFactor = 10.0
 
 // this is the distance so It can calculate rotation. 
-val kTrackWidth: Distance = Distance.ofBaseUnits(500.0, Units.Millimeter)
-private val kWheelDiameter: Distance = Distance.ofBaseUnits(154.4, Units.Millimeter)  
+val kTrackWidth: Distance = Units.Millimeter.of(500.0)
+private val kWheelDiameter: Distance = Units.Millimeters.of(154.4)
 private const val kGearRatio = 10.75
 
 // to be determined
@@ -30,7 +30,7 @@ val kTrainConfig: SparkMaxConfig
         config.smartCurrentLimit(45)
         
         config.closedLoop
-            .pid(0.45, 0.0, 0.25) 
+            .pid(0.1, 0.0, 0.0) 
             .maxOutput(1.0)
         
         val positionFactor = PI * kWheelDiameter.`in`(Units.Meters) / kGearRatio 

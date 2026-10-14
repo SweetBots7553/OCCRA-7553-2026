@@ -25,8 +25,8 @@ class DriveTrain : SubsystemBase() {
 
     private val kinematics = DifferentialDriveKinematics(kTrackWidth)
 
-    private val frontLeftNeo: SparkMax = SparkMax(kFrontLeftNeo, MotorType.kBrushless)
-    private val frontRightNeo: SparkMax = SparkMax(kFrontRightNeo, MotorType.kBrushless)
+    private val frontLeftNeo = SparkMax(kFrontLeftNeo, MotorType.kBrushless)
+    private val frontRightNeo = SparkMax(kFrontRightNeo, MotorType.kBrushless)
     private val backLeftNeo: SparkMax = SparkMax(kBackLeftNeo, MotorType.kBrushless)
     private val backRightNeo: SparkMax = SparkMax(kBackRightNeo, MotorType.kBrushless)
     

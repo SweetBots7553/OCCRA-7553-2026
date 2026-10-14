@@ -13,8 +13,8 @@ import frc.robot.constants.kPneumaticChannel
 class Intake : SubsystemBase() {
 
     private val intakeMotor = WPI_VictorSPX(kIntakeCANID)
-
     private val penumatic = Solenoid(PneumaticsModuleType.CTREPCM, kPneumaticChannel)
+    
     init {
         intakeMotor.configAllSettings(kIntakeConfig)
     }

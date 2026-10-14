@@ -2,13 +2,14 @@ package frc.robot
 
 import com.pathplanner.lib.auto.AutoBuilder
 import com.pathplanner.lib.auto.NamedCommands
+import edu.wpi.first.math.MathUtil
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
-import frc.robot.constants.deadbandOutput
 import frc.robot.constants.kCoDriverPort
+import frc.robot.constants.kDeadbandThreshold
 import frc.robot.constants.kDriverPort
 import frc.robot.constants.kIntakeSpeed
 import frc.robot.subsystems.drive.DriveTrain
@@ -40,21 +41,21 @@ class RobotContainer {
     init {
         // arcade control
         driveTrain.defaultCommand = driveTrain.drive(
-            { deadbandOutput(driverController.leftX) },
-            { deadbandOutput(driverController.leftY) },
-            { deadbandOutput(driverController.rightX) }
+            { MathUtil.applyDeadband(driverController.leftX, kDeadbandThreshold) },
+            { MathUtil.applyDeadband(driverController.leftY, kDeadbandThreshold)},
+            { MathUtil.applyDeadband(driverController.rightX, kDeadbandThreshold) }
         )
     }
     // commands
 
     private val intakeCommand: Command
-        get() = Commands.parallel(intake.intake { kIntakeSpeed }, indexer.index { kIntakeSpeed })
+        get() = intake.intake { kIntakeSpeed }.alongWith(indexer.index { kIntakeSpeed })
 
     private val outTakeCommand: Command
-        get() = Commands.parallel(intake.intake { -kIntakeSpeed }, indexer.index { -kIntakeSpeed })
+        get() = intake.intake { -kIntakeSpeed }.alongWith(indexer.index { -kIntakeSpeed })
 
     private val shootCommand: Command
-        get() = Commands.parallel(shooter.shoot(), indexer.index { kIntakeSpeed })
+        get() = shooter.shoot().alongWith(indexer.index { kIntakeSpeed })
 
     private val extend: Command
         get() = intake.extend { true }

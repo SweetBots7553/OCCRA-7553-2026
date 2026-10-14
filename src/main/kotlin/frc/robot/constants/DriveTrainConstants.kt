@@ -59,6 +59,8 @@ val kBackRightConfig: SparkMaxConfig
     get() {
         val config = kTrainConfig
         
+        config.inverted(true)
+        
         config.follow(kFrontRightNeo) 
         
         return config

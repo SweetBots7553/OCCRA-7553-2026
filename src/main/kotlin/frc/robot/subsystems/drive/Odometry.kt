@@ -15,11 +15,13 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.constants.kPathController
 
-class Odometry(
-    driveTrain: DriveTrain, 
-    frontLeftNeo: SparkMax, 
-    frontRightNeo: SparkMax, 
-    private val kinematics: DifferentialDriveKinematics) : SubsystemBase() {
+data class Odometry(
+    private val driveTrain: DriveTrain,
+    private val frontLeftNeo: SparkMax,
+    private val frontRightNeo: SparkMax,
+    private val kinematics: DifferentialDriveKinematics
+    
+    ) : SubsystemBase() {
 
     private val frontLeftEncoder = frontLeftNeo.encoder
     private val frontRightEncoder = frontRightNeo.encoder

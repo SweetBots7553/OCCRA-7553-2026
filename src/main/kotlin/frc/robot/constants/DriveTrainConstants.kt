@@ -15,10 +15,10 @@ private val kWheelDiameter: Distance = Units.Millimeters.of(154.4)
 private const val kGearRatio = 10.75
 
 // to be determined
-const val kFrontLeftNeo = 0
-const val kFrontRightNeo = 1
-const val kBackLeftNeo = 2
-const val kBackRightNeo = 3
+const val kFrontLeftNeo = 23
+const val kFrontRightNeo = 21
+const val kBackLeftNeo = 24
+const val kBackRightNeo = 22
 
 // still need to pid tune
 

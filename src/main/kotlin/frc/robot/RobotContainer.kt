@@ -20,21 +20,21 @@ import frc.robot.subsystems.Shooter
 class RobotContainer {
     // operator controllers
     private val driverController = CommandXboxController(kDriverPort)
-    private val coDriverController = CommandXboxController(kCoDriverPort)
+    // private val coDriverController = CommandXboxController(kCoDriverPort)
 
     // subsystems
     private val driveTrain = DriveTrain()
-    private val intake = Intake()
-    private val shooter = Shooter()
-    private val indexer = Indexer()
+    // private val intake = Intake()
+    // private val shooter = Shooter()
+    // private val indexer = Indexer()
 
     // pathplanner autos
     init {
-        NamedCommands.registerCommand("Intake", intakeCommand)
-        NamedCommands.registerCommand("OutTake", outTakeCommand)
-        NamedCommands.registerCommand("Shoot", shootCommand)
-        NamedCommands.registerCommand("Extend", extend)
-        NamedCommands.registerCommand("UnExtend", unextend)
+        // NamedCommands.registerCommand("Intake", intakeCommand)
+        // NamedCommands.registerCommand("OutTake", outTakeCommand)
+        // NamedCommands.registerCommand("Shoot", shootCommand)
+        // NamedCommands.registerCommand("Extend", extend)
+        // NamedCommands.registerCommand("UnExtend", unextend)
     }
 
     // controls
@@ -48,36 +48,40 @@ class RobotContainer {
     }
     // commands
 
-    private val intakeCommand: Command
-        get() = intake.intake { kIntakeSpeed }.alongWith(indexer.index { kIntakeSpeed })
+    // private val intakeCommand: Command
+    //     get() = intake.intake { kIntakeSpeed }.alongWith(indexer.index { kIntakeSpeed })
 
-    private val outTakeCommand: Command
-        get() = intake.intake { -kIntakeSpeed }.alongWith(indexer.index { -kIntakeSpeed })
+    // private val outTakeCommand: Command
+    //     get() = intake.intake { -kIntakeSpeed }.alongWith(indexer.index { -kIntakeSpeed })
 
-    private val shootCommand: Command
-        get() = shooter.shoot().alongWith(indexer.index { kIntakeSpeed })
+    // private val shootCommand: Command
+    //     get() = shooter.shoot().alongWith(indexer.index { kIntakeSpeed })
 
-    private val extend: Command
-        get() = intake.extend { true }
+    // private val extend: Command
+    //     get() = intake.extend { true }
 
-    private val unextend: Command
-        get() = intake.extend { false }
+    // private val unextend: Command
+    //     get() = intake.extend { false }
 
     // auto
 
-    private val autoChooser = SendableChooser<String>()
+    // private val autoChooser = SendableChooser<String>()
 
-    init {
-        val tab = Shuffleboard.getTab("Auto")
+    // init {
+    //     val tab = Shuffleboard.getTab("Auto")
 
-        autoChooser.addOption("test", "test")
-
-
-        tab.add { autoChooser }
-    }
+    //     autoChooser.addOption("test", "test")
 
 
+    //     tab.add { autoChooser }
+    // }
+
+
+    // val autonomousCommand: Command
+    //     get() = AutoBuilder.buildAuto(autoChooser.selected)
+        
     val autonomousCommand: Command
-        get() = AutoBuilder.buildAuto(autoChooser.selected)
+        get() = Commands.none()
+
 
 }

@@ -23,10 +23,10 @@ class RobotContainer {
     // private val coDriverController = CommandXboxController(kCoDriverPort)
 
     // subsystems
-    private val driveTrain = DriveTrain()
-    // private val intake = Intake()
-    // private val shooter = Shooter()
-    // private val indexer = Indexer()
+    private val driveTrain = DriveTrain
+    // private val intake = Intake
+    // private val shooter = Shooter
+    // private val indexer = Indexer
 
     // pathplanner autos
     init {

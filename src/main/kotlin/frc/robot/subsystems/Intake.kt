@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX
 import edu.wpi.first.wpilibj.PneumaticHub
 import edu.wpi.first.wpilibj.PneumaticsModuleType
 import edu.wpi.first.wpilibj.Solenoid
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.constants.kIntakeCANID
@@ -12,7 +13,7 @@ import frc.robot.constants.kIntakeConfig
 import frc.robot.constants.kPneumaticChannel
 import frc.robot.constants.kPneumaticHubCANID
 
-class Intake : SubsystemBase() {
+object Intake : SubsystemBase() {
 
     private val penumaticHub = PneumaticHub(kPneumaticHubCANID)
     
@@ -21,6 +22,12 @@ class Intake : SubsystemBase() {
     
     init {
         intakeMotor.configAllSettings(kIntakeConfig)
+
+        val tab = Shuffleboard.getTab("Intake")
+        
+        tab.addDouble("Intake-Motor-Speed") { intakeMotor.get() }
+        tab.addBoolean("Extended") {penumatic.get()}
+        
     }
     
     private fun extend(b: Boolean) {

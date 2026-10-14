@@ -23,14 +23,14 @@ import frc.robot.constants.kSpeedFactor
 import frc.robot.constants.kTrackWidth
 import frc.robot.constants.kTrainConfig
 
-class DriveTrain : SubsystemBase() {
+object DriveTrain : SubsystemBase() {
 
     private val kinematics = DifferentialDriveKinematics(kTrackWidth)
 
     private val frontLeftNeo = SparkMax(kFrontLeftNeo, MotorType.kBrushless)
     private val frontRightNeo = SparkMax(kFrontRightNeo, MotorType.kBrushless)
-    private val backLeftNeo: SparkMax = SparkMax(kBackLeftNeo, MotorType.kBrushless)
-    private val backRightNeo: SparkMax = SparkMax(kBackRightNeo, MotorType.kBrushless)
+    private val backLeftNeo = SparkMax(kBackLeftNeo, MotorType.kBrushless)
+    private val backRightNeo = SparkMax(kBackRightNeo, MotorType.kBrushless)
     
     init {
         frontLeftNeo.configure(kTrainConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
@@ -38,14 +38,12 @@ class DriveTrain : SubsystemBase() {
         backLeftNeo.configure(kBackLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
         backRightNeo.configure(kBackRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
         
-           
         val chassisTab = Shuffleboard.getTab("Chassis")
             
         chassisTab.addDouble("front-left-motor") { frontLeftNeo.get() }
         chassisTab.addDouble("front-right-motor") { frontRightNeo.get() }
         chassisTab.addDouble("back-left-motor") { backLeftNeo.get() }
         chassisTab.addDouble("back-right-motor") { backRightNeo.get() }
-        
     }
 
     fun drive(x: () -> Double, r: () -> Double): Command {

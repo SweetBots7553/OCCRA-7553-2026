@@ -56,9 +56,7 @@ class Odometry(
         } 
             
     init {
-        
         // disable holographic movement 
-        
         val config = RobotConfig.fromGUISettings()
                 
         AutoBuilder.configure (

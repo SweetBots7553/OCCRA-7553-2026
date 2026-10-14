@@ -2,6 +2,7 @@ package frc.robot.subsystems
 
 import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.constants.kIndexerConfig
@@ -13,6 +14,10 @@ class Indexer : SubsystemBase() {
 
     init {
         indexerMotor.configAllSettings(kIndexerConfig)
+        
+        val tab = Shuffleboard.getTab("Indexer")
+        
+        tab.addDouble("Shooter-Motor-Speed") { indexerMotor.get() }
     }
 
     private fun index(dutycycle: Double) {

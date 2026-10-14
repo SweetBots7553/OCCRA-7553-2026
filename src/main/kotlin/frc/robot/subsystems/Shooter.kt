@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkBase
 import com.revrobotics.spark.SparkFlex
 import com.revrobotics.spark.SparkLowLevel
 import com.revrobotics.spark.SparkMax
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.constants.kShooterConfig
@@ -16,8 +17,12 @@ class Shooter : SubsystemBase() {
 
     private val shooterMotor = SparkFlex(kShooterMotorCANID, SparkLowLevel.MotorType.kBrushless)
 
-    init {
+    init {    
         shooterMotor.configure(kShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
+        
+        val tab = Shuffleboard.getTab("Shooter")
+        
+        tab.addDouble("Shooter-Motor-Speed") { shooterMotor.get() }
     }
 
     private fun shoot(dutycycle: Double) {

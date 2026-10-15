@@ -13,7 +13,7 @@ const val kRotationSpeedFactor = 0.5
 
 // this is the distance so It can calculate rotation. 
 val kTrackWidth: Distance = Units.Millimeter.of(500.0)
-private val kWheelDiameter: Distance = Units.Millimeters.of(154.4)
+private val kWheelDiameter: Distance = Units.Millimeters.of(154.4) // this diameter might be wrong
 private const val kGearRatio = 10.75
 
 // to be determined
@@ -41,7 +41,7 @@ val kTrainConfig: SparkMaxConfig
         
         config.encoder
             .positionConversionFactor(positionFactor)
-            .velocityConversionFactor(positionFactor / 60) 
+            .velocityConversionFactor(positionFactor / 60.0) 
             
 
             

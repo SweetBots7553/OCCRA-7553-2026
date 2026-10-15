@@ -44,6 +44,7 @@ object RobotContainer {
         coDriverController.b().whileTrue(intakeCommand).onFalse(unextend)
         coDriverController.a().whileTrue(shootCommand).onFalse(unextend)
 
+        // this is tmp
         driverController.a().whileTrue(driveTrain.sysIdDynamic(SysIdRoutine.Direction.kForward))
         driverController.b().whileTrue(driveTrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward))
     }

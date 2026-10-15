@@ -62,6 +62,4 @@ object Intake : SubsystemBase() {
             intake(0.0)
         })
     }
-
-
 }

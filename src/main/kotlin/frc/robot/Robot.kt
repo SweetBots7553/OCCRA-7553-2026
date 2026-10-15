@@ -7,13 +7,13 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj.TimedRobot
 import frc.robot.utils.Elastic
 
-class Robot : TimedRobot() {
+object Robot : TimedRobot() {
     private var autonomousCommand: Command? = null
     private var robotContainer: RobotContainer? = null
 
     override fun robotInit() {
         WebServer.start(5800, Filesystem.getDeployDirectory().canonicalPath)
-        robotContainer = RobotContainer()
+        robotContainer = RobotContainer
     }
 
     override fun robotPeriodic() {

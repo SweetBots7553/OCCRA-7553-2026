@@ -21,7 +21,7 @@ import frc.robot.subsystems.Indexer
 import frc.robot.subsystems.Intake
 import frc.robot.subsystems.Shooter
 
-class RobotContainer {
+object RobotContainer {
     // operator controllers
     private val driverController = CommandXboxController(kDriverPort)
     private val coDriverController = CommandXboxController(kCoDriverPort)

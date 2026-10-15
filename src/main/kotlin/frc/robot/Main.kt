@@ -20,7 +20,7 @@ object Main {
     fun main(args: Array<String>) {
         RobotBase.startRobot {
             HAL.report(FRCNetComm.tResourceType.kResourceType_Language, FRCNetComm.tInstances.kLanguage_Kotlin)
-            Robot()
+            Robot
         }
     }
 }

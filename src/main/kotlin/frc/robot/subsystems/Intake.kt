@@ -25,11 +25,6 @@ object Intake : SubsystemBase() {
     init {
         intakeMotor.configAllSettings(kIntakeConfig)
         commpressor.enableDigital()
-
-        val tab = Shuffleboard.getTab("Intake")
-
-        tab.addDouble("Intake-Motor-Speed") { intakeMotor.get() }
-        tab.addBoolean("Extended") { penumatic.get() }
     }
 
     private fun extend(b: Boolean) {

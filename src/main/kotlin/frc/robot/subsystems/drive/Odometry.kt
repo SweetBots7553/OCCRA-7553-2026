@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds
+import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.ADXRS450_Gyro
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.SubsystemBase
@@ -73,23 +74,25 @@ data class Odometry(
             { false },
             driveTrain
         )
-
-        val odometryTab = Shuffleboard.getTab("Odometry")
-
-        odometryTab.addDouble("x") { currentPose.x }
-        odometryTab.addDouble("y") { currentPose.y }
-        odometryTab.addDouble("rotation-deg") { currentPose.rotation.degrees }
-        odometryTab.addDouble("rotation-rad") { currentPose.rotation.radians }
-
-        odometryTab.addDouble("frontLeft-encoder-velocity") { frontLeftEncoder.velocity }
-        odometryTab.addDouble("frontRight-encoder-velocity") { frontRightEncoder.velocity }
     }
 
     fun reset() {
         odometry.resetPosition(gyro.rotation2d, wheelpositions, resetPose)
     }
+    
+    private val table = NetworkTableInstance.getDefault().getTable("Odometry")
+    
+    private val positionXEntry = table.getEntry("position-x")
+    private val positionYEntry = table.getEntry("position-y") 
+    private val rotationEntry = table.getEntry("rotation-heading") 
 
     override fun periodic() {
         odometry.update(gyro.rotation2d, wheelpositions)
+        
+        val pose = currentPose
+        
+        positionXEntry.setDouble(pose.x)
+        positionYEntry.setDouble(pose.y)
+        rotationEntry.setDouble(pose.rotation.radians)
     }
 }

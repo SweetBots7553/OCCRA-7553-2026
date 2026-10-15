@@ -44,6 +44,11 @@ object DriveTrain : SubsystemBase() {
         chassisTab.addDouble("front-right-motor") { frontRightNeo.get() }
         chassisTab.addDouble("back-left-motor") { backLeftNeo.get() }
         chassisTab.addDouble("back-right-motor") { backRightNeo.get() }
+    
+        chassisTab.addBoolean("front-left-setpoint") { frontLeftNeo.closedLoopController.setpoint <= frontLeftNeo.get() }
+        chassisTab.addBoolean("front-right-setpoint") { frontRightNeo.closedLoopController.setpoint <= frontRightNeo.get() }
+        chassisTab.addBoolean("back-left-setpoint") { backLeftNeo.closedLoopController.setpoint <= backLeftNeo.get() }
+        chassisTab.addBoolean("back-right-setpoint") { backRightNeo.closedLoopController.setpoint <= backRightNeo.get() }
     }
 
     fun drive(x: () -> Double, r: () -> Double): Command {

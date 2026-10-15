@@ -20,20 +20,20 @@ data class Odometry(
     private val frontLeftNeo: SparkMax,
     private val frontRightNeo: SparkMax,
     private val kinematics: DifferentialDriveKinematics
-    
-    ) : SubsystemBase() {
+
+) : SubsystemBase() {
 
     private val frontLeftEncoder = frontLeftNeo.encoder
     private val frontRightEncoder = frontRightNeo.encoder
     private val gyro = ADXRS450_Gyro()
 
     private val resetPose = Pose2d()
-        
+
     private val odometry =
-        DifferentialDriveOdometry (
-            gyro.rotation2d, 
-            frontLeftEncoder.position, 
-            frontRightEncoder.position, 
+        DifferentialDriveOdometry(
+            gyro.rotation2d,
+            frontLeftEncoder.position,
+            frontRightEncoder.position,
             resetPose
         )
 
@@ -41,54 +41,54 @@ data class Odometry(
         get() {
             return odometry.poseMeters
         }
-            
+
     private val wheelpositions: DifferentialDriveWheelPositions
         get() {
             return DifferentialDriveWheelPositions(frontLeftEncoder.position, frontRightEncoder.position)
         }
-        
+
     private val wheelvelocitys: DifferentialDriveWheelSpeeds
         get() {
             return DifferentialDriveWheelSpeeds(frontLeftEncoder.velocity, frontRightEncoder.velocity)
         }
-        
+
     private val chassisSpeeds: ChassisSpeeds
-        get() {            
+        get() {
             return kinematics.toChassisSpeeds(wheelvelocitys)
-        } 
-            
+        }
+
     init {
         // disable holographic movement 
         val config = RobotConfig.fromGUISettings()
-                
-        AutoBuilder.configure (
-            { currentPose }, 
-            { resetPose }, 
+
+        AutoBuilder.configure(
+            { currentPose },
+            { resetPose },
             { chassisSpeeds },
-            {speeds: ChassisSpeeds, _: DriveFeedforwards ->
+            { speeds: ChassisSpeeds, _: DriveFeedforwards ->
                 driveTrain.drive(speeds)
             },
             kPathController,
-            config, 
-            {false}, 
+            config,
+            { false },
             driveTrain
         )
 
         val odometryTab = Shuffleboard.getTab("Odometry")
-        
+
         odometryTab.addDouble("x") { currentPose.x }
         odometryTab.addDouble("y") { currentPose.y }
         odometryTab.addDouble("rotation-deg") { currentPose.rotation.degrees }
         odometryTab.addDouble("rotation-rad") { currentPose.rotation.radians }
-        
+
         odometryTab.addDouble("frontLeft-encoder-velocity") { frontLeftEncoder.velocity }
         odometryTab.addDouble("frontRight-encoder-velocity") { frontRightEncoder.velocity }
     }
-    
+
     fun reset() {
         odometry.resetPosition(gyro.rotation2d, wheelpositions, resetPose)
     }
-    
+
     override fun periodic() {
         odometry.update(gyro.rotation2d, wheelpositions)
     }

@@ -14,15 +14,11 @@ object Indexer : SubsystemBase() {
 
     init {
         indexerMotor.configAllSettings(kIndexerConfig)
-        
-        val tab = Shuffleboard.getTab("Indexer")
-        
-        tab.addDouble("Indexer-Motor-Speed") {indexerMotor.get() }
     }
 
     private fun index(dutycycle: Double) {
         indexerMotor.set(dutycycle)
-    } 
+    }
 
     fun index(dutycycle: () -> Double): Command {
         return startEnd({

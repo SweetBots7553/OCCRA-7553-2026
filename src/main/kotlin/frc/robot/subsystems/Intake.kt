@@ -19,28 +19,23 @@ object Intake : SubsystemBase() {
     private val penumaticHub = PneumaticHub(kPneumaticHubCANID)
     private val penumatic = Solenoid(PneumaticsModuleType.REVPH, kPneumaticChannel)
     private val commpressor = Compressor(PneumaticsModuleType.REVPH)
-    
 
     private val intakeMotor = WPI_VictorSPX(kIntakeCANID)
 
-    
     init {
         intakeMotor.configAllSettings(kIntakeConfig)
         commpressor.enableDigital()
 
         val tab = Shuffleboard.getTab("Intake")
-        
-        tab.addDouble("Intake-Motor-Speed") { intakeMotor.get() }
-        tab.addBoolean("Extended") {penumatic.get()}
-        
 
-        
+        tab.addDouble("Intake-Motor-Speed") { intakeMotor.get() }
+        tab.addBoolean("Extended") { penumatic.get() }
     }
-    
+
     private fun extend(b: Boolean) {
         if (b == penumatic.get())
             return
-            
+
         penumatic.set(b)
     }
 
@@ -49,24 +44,24 @@ object Intake : SubsystemBase() {
             extend(b())
         }
     }
-    
+
     private fun intake(dutycycle: Double) {
         if (!penumatic.get()) {
-            intakeMotor.set( 0.0)
-            
+            intakeMotor.set(0.0)
+
             return
-        }    
-        
-        intakeMotor.set( dutycycle)
+        }
+
+        intakeMotor.set(dutycycle)
     }
 
-    fun intake(dutycycle :() -> Double): Command {
+    fun intake(dutycycle: () -> Double): Command {
         return startEnd({
             intake(dutycycle)
         }, {
             intake(0.0)
         })
     }
-    
-    
+
+
 }

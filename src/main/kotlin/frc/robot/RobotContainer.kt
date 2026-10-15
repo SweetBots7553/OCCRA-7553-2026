@@ -48,13 +48,13 @@ class RobotContainer {
             { MathUtil.applyDeadband(driverController.leftY, kDeadbandThreshold) }
         )
         
-        coDriverController.b().whileTrue(intakeCommand)        
+        coDriverController.b().whileTrue(intakeCommand).onFalse(unextend)       
     }
     // commands
 
     private val intakeCommand: Command
         get() {
-            return Commands.sequence(extend, intake.intake { kIntakeSpeed }.alongWith(indexer.index { kIntakeSpeed }).finallyDo { _ -> unextend.initialize() })
+            return Commands.sequence(extend, intake.intake { kIntakeSpeed }.alongWith(indexer.index { kIntakeSpeed }))
 
         }
     private val outTakeCommand: Command

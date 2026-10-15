@@ -20,7 +20,7 @@ object Intake : SubsystemBase() {
     private val penumatic = Solenoid(PneumaticsModuleType.REVPH, kPneumaticChannel)
     private val commpressor = Compressor(PneumaticsModuleType.REVPH)
     
-    
+
     private val intakeMotor = WPI_VictorSPX(kIntakeCANID)
 
     
@@ -67,4 +67,6 @@ object Intake : SubsystemBase() {
             intake(0.0)
         })
     }
+    
+    
 }

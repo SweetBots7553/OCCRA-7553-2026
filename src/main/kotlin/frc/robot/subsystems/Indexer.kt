@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.constants.kIndexerConfig
 import frc.robot.constants.kIndexerMotorCANID
 
-class Indexer : SubsystemBase() {
+object Indexer : SubsystemBase() {
 
     private val indexerMotor = WPI_VictorSPX(kIndexerMotorCANID)
 

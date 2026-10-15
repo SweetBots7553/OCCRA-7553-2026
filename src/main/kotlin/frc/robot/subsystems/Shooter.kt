@@ -13,7 +13,7 @@ import frc.robot.constants.kShooterConfig
 import frc.robot.constants.kShooterMotorCANID
 import frc.robot.constants.kShooterSpeed
 
-class Shooter : SubsystemBase() {
+object Shooter : SubsystemBase() {
 
     private val shooterMotor = SparkFlex(kShooterMotorCANID, SparkLowLevel.MotorType.kBrushless)
 

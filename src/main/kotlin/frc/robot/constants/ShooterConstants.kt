@@ -28,7 +28,7 @@ val kShooterConfig: SparkFlexConfig
             
         config.encoder
             .positionConversionFactor(positionFactor)
-            .velocityConversionFactor(positionFactor / 60)
+            .velocityConversionFactor(positionFactor / 60.0)
         
         
         config.idleMode(SparkBaseConfig.IdleMode.kCoast)    

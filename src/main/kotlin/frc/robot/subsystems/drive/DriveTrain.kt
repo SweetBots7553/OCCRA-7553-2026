@@ -22,6 +22,9 @@ import frc.robot.constants.kSpeedFactor
 
 import frc.robot.constants.kTrackWidth
 import frc.robot.constants.kTrainConfig
+import java.util.function.BooleanSupplier
+import java.util.function.DoubleSupplier
+import kotlin.math.abs
 
 object DriveTrain : SubsystemBase() {
 
@@ -39,16 +42,18 @@ object DriveTrain : SubsystemBase() {
         backRightNeo.configure(kBackRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
         
         val chassisTab = Shuffleboard.getTab("Chassis")
-            
-        chassisTab.addDouble("front-left-motor") { frontLeftNeo.get() }
-        chassisTab.addDouble("front-right-motor") { frontRightNeo.get() }
-        chassisTab.addDouble("back-left-motor") { backLeftNeo.get() }
-        chassisTab.addDouble("back-right-motor") { backRightNeo.get() }
-    
-        chassisTab.addBoolean("front-left-setpoint") { frontLeftNeo.closedLoopController.setpoint <= frontLeftNeo.get() }
-        chassisTab.addBoolean("front-right-setpoint") { frontRightNeo.closedLoopController.setpoint <= frontRightNeo.get() }
-        chassisTab.addBoolean("back-left-setpoint") { backLeftNeo.closedLoopController.setpoint <= backLeftNeo.get() }
-        chassisTab.addBoolean("back-right-setpoint") { backRightNeo.closedLoopController.setpoint <= backRightNeo.get() }
+         // Use addNumber and explicitly pass the lambda as a DoubleSupplier
+        chassisTab.addNumber("front-left-motor", DoubleSupplier { frontLeftNeo.get() })
+        chassisTab.addNumber("front-right-motor", DoubleSupplier { frontRightNeo.get() })
+        chassisTab.addNumber("back-left-motor", DoubleSupplier { backLeftNeo.get() })
+        chassisTab.addNumber("back-right-motor", DoubleSupplier { backRightNeo.get() })
+
+        // Booleans also require a BooleanSupplier to auto-update
+        chassisTab.addBoolean("front-left-setpoint", BooleanSupplier { abs(frontLeftNeo.closedLoopController.setpoint) <= abs(frontLeftNeo.get()) })
+        chassisTab.addBoolean("front-right-setpoint",   BooleanSupplier { abs(frontRightNeo.closedLoopController.setpoint) <= abs(frontRightNeo.get()) })
+        chassisTab.addBoolean("back-left-setpoint", BooleanSupplier { abs(backLeftNeo.closedLoopController.setpoint) <= abs(backLeftNeo.get()) })
+        chassisTab.addBoolean("back-right-setpoint", BooleanSupplier { abs(backRightNeo.closedLoopController.setpoint) <= abs(backRightNeo.get()) })
+
     }
 
     fun drive(x: () -> Double, r: () -> Double): Command {

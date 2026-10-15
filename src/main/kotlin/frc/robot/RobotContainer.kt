@@ -3,6 +3,9 @@ package frc.robot
 import com.pathplanner.lib.auto.AutoBuilder
 import com.pathplanner.lib.auto.NamedCommands
 import edu.wpi.first.math.MathUtil
+import edu.wpi.first.networktables.NetworkTable
+import edu.wpi.first.networktables.NetworkTableInstance
+import edu.wpi.first.networktables.NetworkTablesJNI
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
@@ -20,21 +23,21 @@ import frc.robot.subsystems.Shooter
 class RobotContainer {
     // operator controllers
     private val driverController = CommandXboxController(kDriverPort)
-    // private val coDriverController = CommandXboxController(kCoDriverPort)
+    private val coDriverController = CommandXboxController(kCoDriverPort)
 
     // subsystems
     private val driveTrain = DriveTrain
-    // private val intake = Intake
-    // private val shooter = Shooter
-    // private val indexer = Indexer
-
+    private val intake = Intake
+    private val shooter = Shooter
+    private val indexer = Indexer
+    
     // pathplanner autos
     init {
-        // NamedCommands.registerCommand("Intake", intakeCommand)
-        // NamedCommands.registerCommand("OutTake", outTakeCommand)
-        // NamedCommands.registerCommand("Shoot", shootCommand)
-        // NamedCommands.registerCommand("Extend", extend)
-        // NamedCommands.registerCommand("UnExtend", unextend)
+        NamedCommands.registerCommand("Intake", intakeCommand)
+        NamedCommands.registerCommand("OutTake", outTakeCommand)
+        NamedCommands.registerCommand("Shoot", shootCommand)
+        NamedCommands.registerCommand("Extend", extend)
+        NamedCommands.registerCommand("UnExtend", unextend)
     }
 
     // controls
@@ -44,23 +47,27 @@ class RobotContainer {
             { MathUtil.applyDeadband(driverController.rightX, kDeadbandThreshold) },
             { MathUtil.applyDeadband(driverController.leftY, kDeadbandThreshold) }
         )
+        
+        coDriverController.b().whileTrue(intakeCommand)        
     }
     // commands
 
-    // private val intakeCommand: Command
-    // //     get() = intake.intake { kIntakeSpeed }.alongWith(indexer.index { kIntakeSpeed })
+    private val intakeCommand: Command
+        get() {
+            return Commands.sequence(extend, intake.intake { kIntakeSpeed }.alongWith(indexer.index { kIntakeSpeed }).finallyDo { _ -> unextend.initialize() })
 
-    // private val outTakeCommand: Command
-    //     get() = intake.intake { -kIntakeSpeed }.alongWith(indexer.index { -kIntakeSpeed })
+        }
+    private val outTakeCommand: Command
+        get() = intake.intake { -kIntakeSpeed }.alongWith(indexer.index { -kIntakeSpeed })
 
-    // private val shootCommand: Command
-    //     get() = shooter.shoot().alongWith(indexer.index { kIntakeSpeed })
+    private val shootCommand: Command
+        get() = shooter.shoot()
 
-    // private val extend: Command
-    //     get() = intake.extend { true }
+    private val extend: Command
+        get() = intake.extend { true }
 
-    // private val unextend: Command
-    //     get() = intake.extend { false }
+    private val unextend: Command
+        get() = intake.extend { false }
 
     // auto
 

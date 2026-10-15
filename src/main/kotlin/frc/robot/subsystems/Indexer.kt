@@ -17,7 +17,7 @@ object Indexer : SubsystemBase() {
         
         val tab = Shuffleboard.getTab("Indexer")
         
-        tab.addDouble("Shooter-Motor-Speed") { indexerMotor.get() }
+        tab.addDouble("Indexer-Motor-Speed") {indexerMotor.get() }
     }
 
     private fun index(dutycycle: Double) {

@@ -7,6 +7,9 @@ import edu.wpi.first.units.Units
 import edu.wpi.first.units.measure.Distance
 import kotlin.math.PI
 
+
+// TODO: need to get rev logs from Advantage scope, and use sysid to get the feedforwards, also fix gear ratio, and diameter. 
+
 // m/s
 const val kSpeedFactor = 10.0
 const val kRotationSpeedFactor = 0.5

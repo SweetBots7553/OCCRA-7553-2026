@@ -146,11 +146,28 @@ object DriveTrain : SubsystemBase() {
         routine = SysIdRoutine(config, mechanism)
     }
 
-    fun sysIdQuasistatic(dir: SysIdRoutine.Direction): Command {
+    private fun sysIdQuasistatic(dir: SysIdRoutine.Direction): Command {
         return routine.quasistatic(dir)
     }
 
-    fun sysIdDynamic(dir: SysIdRoutine.Direction): Command {
+    private fun sysIdDynamic(dir: SysIdRoutine.Direction): Command {
         return routine.dynamic(dir)
     }
+
+    fun forwardsysIdQuasistatic(): Command {
+        return sysIdDynamic(SysIdRoutine.Direction.kForward)
+    }
+
+    fun forwardsysIdDynamic(): Command {
+        return sysIdDynamic(SysIdRoutine.Direction.kForward)
+    }
+
+    fun reversesysIdQuasistatic(): Command {
+        return sysIdQuasistatic(SysIdRoutine.Direction.kReverse)
+    }
+
+    fun reversesysIdDynamic(): Command {
+        return sysIdDynamic(SysIdRoutine.Direction.kReverse)
+    }
+
 }

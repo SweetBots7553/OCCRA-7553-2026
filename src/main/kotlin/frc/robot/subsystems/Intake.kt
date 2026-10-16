@@ -47,7 +47,7 @@ object Intake : SubsystemBase() {
 
     fun intake(dutycycle: () -> Double): Command {
         return startEnd({
-            intake(dutycycle)
+            intake(dutycycle())
         }, {
             intake(0.0)
         })

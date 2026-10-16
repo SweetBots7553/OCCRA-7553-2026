@@ -44,9 +44,13 @@ object RobotContainer {
         coDriverController.b().whileTrue(intakeCommand).onFalse(unextend)
         coDriverController.a().whileTrue(shootCommand).onFalse(unextend)
 
-        // this is tmp
-        // driverController.a().whileTrue(driveTrain.sysIdDynamic(SysIdRoutine.Direction.kForward))
-        // driverController.b().whileTrue(driveTrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward))
+        
+        // tmp 
+        driverController.x().whileTrue(driveTrain.forwardsysIdQuasistatic())
+        driverController.y().whileFalse(driveTrain.reversesysIdQuasistatic())
+        
+        driverController.a().whileTrue(driveTrain.forwardsysIdDynamic())
+        driverController.b().whileTrue(driveTrain.reversesysIdDynamic())
     }
     // commands
 

@@ -114,8 +114,8 @@ object DriveTrain : SubsystemBase() {
 
         val mechanism = SysIdRoutine.Mechanism(
             { voltage ->
-                frontLeftNeo.setVoltage(voltage.`in`(Units.Volts))
-                frontRightNeo.setVoltage(voltage.`in`(Units.Volts))
+                frontLeftNeo.setVoltage(voltage)
+                frontRightNeo.setVoltage(voltage)
             },
             { log ->
 

@@ -6,7 +6,9 @@ import com.revrobotics.spark.SparkBase
 import com.revrobotics.spark.SparkFlex
 import com.revrobotics.spark.SparkLowLevel
 import com.revrobotics.spark.SparkMax
+import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.units.Units
+import edu.wpi.first.units.measure.Voltage
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
@@ -34,4 +36,65 @@ object Shooter : SubsystemBase() {
             shoot(0.0)
         })
     }
+
+    // network data
+    
+    private val table = NetworkTableInstance.getDefault().getTable("Shooter")
+    private val shooterEntry = table.getEntry("Shooter")
+
+    override fun periodic() {
+        shooterEntry.setDouble(shooterMotor.get())
+    }
+    
+    // sysid
+ 
+    private val routine: SysIdRoutine
+    
+    init {
+        val config = SysIdRoutine.Config()
+        
+        val mechanism = SysIdRoutine.Mechanism(
+            {voltage ->
+                shooterMotor.setVoltage(voltage)
+            }, 
+            {log ->
+            
+                val voltage: Voltage = Units.Volts.of(shooterMotor.busVoltage * shooterMotor.appliedOutput)
+            
+                log.motor("shooter")
+                    .voltage(voltage)
+                    .linearPosition(Units.Meters.of(shooterMotor.encoder.position))
+                    .linearVelocity(Units.MetersPerSecond.of(shooterMotor.encoder.velocity))
+            }, 
+                this
+        )
+        
+        routine = SysIdRoutine(config, mechanism)
+    }
+    
+      private fun sysIdQuasistatic(dir: SysIdRoutine.Direction): Command {
+        return routine.quasistatic(dir)
+    }
+
+    private fun sysIdDynamic(dir: SysIdRoutine.Direction): Command {
+        return routine.dynamic(dir)
+    }
+
+    fun forwardsysIdQuasistatic(): Command {
+        return sysIdDynamic(SysIdRoutine.Direction.kForward)
+    }
+
+    fun forwardsysIdDynamic(): Command {
+        return sysIdDynamic(SysIdRoutine.Direction.kForward)
+    }
+
+    fun reversesysIdQuasistatic(): Command {
+        return sysIdQuasistatic(SysIdRoutine.Direction.kReverse)
+    }
+
+    fun reversesysIdDynamic(): Command {
+        return sysIdDynamic(SysIdRoutine.Direction.kReverse)
+    }
+
+    
 }

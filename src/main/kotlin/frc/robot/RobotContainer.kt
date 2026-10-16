@@ -36,8 +36,8 @@ object RobotContainer {
     init {
         // arcade control
         driveTrain.defaultCommand = driveTrain.drive(
-            { MathUtil.applyDeadband(-driverController.leftY, kDeadbandThreshold) },
-            { MathUtil.applyDeadband(-driverController.rightX, kDeadbandThreshold) }
+            { MathUtil.applyDeadband(driverController.rightY, kDeadbandThreshold) },
+            { MathUtil.applyDeadband(driverController.leftX, kDeadbandThreshold) }
         )
 
         coDriverController.x().whileTrue(outTakeCommand).onFalse(unextend)
@@ -46,11 +46,11 @@ object RobotContainer {
 
         
         // tmp 
-        driverController.x().whileTrue(driveTrain.forwardsysIdQuasistatic())
-        driverController.y().whileFalse(driveTrain.reversesysIdQuasistatic())
+        // driverController.x().whileTrue(driveTrain.forwardsysIdQuasistatic())
+        // driverController.y().whileFalse(driveTrain.reversesysIdQuasistatic())
         
-        driverController.a().whileTrue(driveTrain.forwardsysIdDynamic())
-        driverController.b().whileTrue(driveTrain.reversesysIdDynamic())
+        // driverController.a().whileTrue(driveTrain.forwardsysIdDynamic())
+        // driverController.b().whileTrue(driveTrain.reversesysIdDynamic())
     }
     // commands
 
@@ -65,15 +65,16 @@ object RobotContainer {
 
     private val intakeCommand: Command
         get() {
-            return Commands.sequence(extend, intake.intake { kIntakeSpeed }.alongWith(indexer.index { kIntakeSpeed }))
+            
+            val par = Commands.parallel(indexer.index { -kIntakeSpeed }, intake.intake { -kIntakeSpeed })
+            
+            return Commands.sequence(extend, par)
 
         }
     private val outTakeCommand: Command
         get() {
-            return Commands.sequence(
-                extend,
-                intake.intake { -kIntakeSpeed }.alongWith(indexer.index { -kIntakeSpeed })
-            )
+            return extend.andThen( intake.intake { -kIntakeSpeed }.alongWith(indexer.index { -kIntakeSpeed }))
+    
         }
 
     private val shootCommand: Command

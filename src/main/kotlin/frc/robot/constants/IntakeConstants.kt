@@ -3,7 +3,7 @@ package frc.robot.constants
 import com.ctre.phoenix.motorcontrol.can.VictorSPXConfiguration
 
 // dutycycle
-const val kIntakeSpeed = 0.1
+const val kIntakeSpeed = 0.5
 const val kIntakeCANID = 31
 
 val kIntakeConfig: VictorSPXConfiguration 
@@ -14,6 +14,6 @@ val kIntakeConfig: VictorSPXConfiguration
     }
 
 const val kPneumaticChannel = 0
-const val kPneumaticHubCANID = 10
+const val kPneumaticHubCANID = 0
 
 

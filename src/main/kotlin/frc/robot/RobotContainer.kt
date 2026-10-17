@@ -77,7 +77,7 @@ object RobotContainer {
 
             val final = indexer.index { -kIntakeSpeed }
 
-            return Commands.sequence(extend, indexing, shooting, final)
+            return Commands.sequence(extend, intake.intake { -kIntakeSpeed }, indexing, shooting, final)
         }
 
     private val extend: Command

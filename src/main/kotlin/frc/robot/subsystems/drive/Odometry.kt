@@ -71,7 +71,7 @@ data class Odometry(
             },
             kPathController,
             config,
-            { false },
+            { false }, // this will be set to true during comp
             driveTrain
         )
     }
@@ -79,18 +79,18 @@ data class Odometry(
     fun reset() {
         odometry.resetPosition(gyro.rotation2d, wheelpositions, resetPose)
     }
-    
+
     private val table = NetworkTableInstance.getDefault().getTable("Odometry")
-    
+
     private val positionXEntry = table.getEntry("position-x")
-    private val positionYEntry = table.getEntry("position-y") 
-    private val rotationEntry = table.getEntry("rotation-heading") 
+    private val positionYEntry = table.getEntry("position-y")
+    private val rotationEntry = table.getEntry("rotation-heading")
 
     override fun periodic() {
         odometry.update(gyro.rotation2d, wheelpositions)
-        
+
         val pose = currentPose
-        
+
         positionXEntry.setDouble(pose.x)
         positionYEntry.setDouble(pose.y)
         rotationEntry.setDouble(pose.rotation.radians)

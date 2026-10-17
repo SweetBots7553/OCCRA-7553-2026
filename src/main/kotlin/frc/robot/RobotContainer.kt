@@ -72,7 +72,7 @@ object RobotContainer {
 
     private val shootCommand: Command
         get() {
-            val indexing = indexer.index { -kIntakeSpeed }.withTimeout(1.0).andThen(indexer.index { 0.0 })
+            val indexing = indexer.index { kIntakeSpeed }.withTimeout(1.0).andThen(indexer.index { 0.0 })
             val shooting = shooter.shoot().withTimeout(1.0)
 
             val final = indexer.index { -kIntakeSpeed }

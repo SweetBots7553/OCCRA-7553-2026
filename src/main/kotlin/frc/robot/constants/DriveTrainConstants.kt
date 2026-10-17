@@ -28,7 +28,7 @@ const val kBackRightNeo = 22
 val kFrontConfig: SparkMaxConfig
     get() {
         val config = SparkMaxConfig()
-        config.inverted(true)
+        // config.inverted(true)
 
         // So a motor doesn't overclock
         config.smartCurrentLimit(45)
@@ -60,7 +60,7 @@ val kBackRightConfig: SparkMaxConfig
     get() {
         val config = SparkMaxConfig()
         config.apply(kFrontConfig)
-        config.inverted(false)
+        config.inverted(true)
         config.follow(kFrontRightNeo)
         return config
     }

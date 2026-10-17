@@ -29,7 +29,7 @@ object RobotContainer {
     init {
         // arcade control
         driveTrain.defaultCommand = driveTrain.drive(
-            { -MathUtil.applyDeadband(driverController.rightY, kDeadbandThreshold) },
+            { MathUtil.applyDeadband(driverController.rightY, kDeadbandThreshold) },
             { MathUtil.applyDeadband(driverController.leftX, kDeadbandThreshold) }
         )
 
@@ -74,9 +74,9 @@ object RobotContainer {
         get() {
             val indexing = indexer.index { -kIntakeSpeed }.withTimeout(1.0).andThen(indexer.index { 0.0 })
             val shooting = shooter.shoot().withTimeout(1.0)
-            
+
             val final = indexer.index { -kIntakeSpeed }
-            
+
             return Commands.sequence(extend, indexing, shooting, final)
         }
 

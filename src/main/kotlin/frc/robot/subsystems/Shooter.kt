@@ -38,41 +38,41 @@ object Shooter : SubsystemBase() {
     }
 
     // network data
-    
+
     private val table = NetworkTableInstance.getDefault().getTable("Shooter")
     private val shooterEntry = table.getEntry("Shooter")
 
     override fun periodic() {
         shooterEntry.setDouble(shooterMotor.get())
     }
-    
+
     // sysid
- 
+
     private val routine: SysIdRoutine
-    
+
     init {
         val config = SysIdRoutine.Config()
-        
+
         val mechanism = SysIdRoutine.Mechanism(
-            {voltage ->
+            { voltage ->
                 shooterMotor.setVoltage(voltage)
-            }, 
-            {log ->
-            
+            },
+            { log ->
+
                 val voltage: Voltage = Units.Volts.of(shooterMotor.busVoltage * shooterMotor.appliedOutput)
-            
+
                 log.motor("shooter")
                     .voltage(voltage)
                     .linearPosition(Units.Meters.of(shooterMotor.encoder.position))
                     .linearVelocity(Units.MetersPerSecond.of(shooterMotor.encoder.velocity))
-            }, 
-                this
+            },
+            this
         )
-        
+
         routine = SysIdRoutine(config, mechanism)
     }
-    
-      private fun sysIdQuasistatic(dir: SysIdRoutine.Direction): Command {
+
+    private fun sysIdQuasistatic(dir: SysIdRoutine.Direction): Command {
         return routine.quasistatic(dir)
     }
 
@@ -96,5 +96,5 @@ object Shooter : SubsystemBase() {
         return sysIdDynamic(SysIdRoutine.Direction.kReverse)
     }
 
-    
+
 }

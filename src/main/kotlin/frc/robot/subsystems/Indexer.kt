@@ -2,6 +2,7 @@ package frc.robot.subsystems
 
 import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX
+import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
@@ -28,4 +29,10 @@ object Indexer : SubsystemBase() {
         })
     }
 
+    private val table = NetworkTableInstance.getDefault().getTable("Indexer")
+    private val intakeSpeedEntry = table.getEntry("Indexer-speed")
+
+    override fun periodic() {
+        intakeSpeedEntry.setDouble(indexerMotor.get())
+    }
 }

@@ -12,14 +12,15 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds
 import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.ADXRS450_Gyro
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
+import edu.wpi.first.wpilibj.smartdashboard.Field2d
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.constants.kPathController
 
-data class Odometry(
-    private val driveTrain: DriveTrain,
-    private val frontLeftNeo: SparkMax,
-    private val frontRightNeo: SparkMax,
+class Odometry(
+    driveTrain: DriveTrain,
+    frontLeftNeo: SparkMax,
+    frontRightNeo: SparkMax,
     private val kinematics: DifferentialDriveKinematics
 
 ) : SubsystemBase() {
@@ -58,6 +59,11 @@ data class Odometry(
             return kinematics.toChassisSpeeds(wheelvelocitys)
         }
 
+    fun resetOdometry() {
+        odometry.resetPosition(gyro.rotation2d, wheelpositions, resetPose)
+    }
+    // auto    
+
     init {
         // disable holographic movement 
         val config = RobotConfig.fromGUISettings()
@@ -76,23 +82,32 @@ data class Odometry(
         )
     }
 
-    fun reset() {
-        odometry.resetPosition(gyro.rotation2d, wheelpositions, resetPose)
+    // NT data
+
+    // field view
+    private val field = Field2d()
+
+    init {
+        SmartDashboard.putData("odometry/odometry-field", field)
     }
-    
+
     private val table = NetworkTableInstance.getDefault().getTable("Odometry")
-    
+
     private val positionXEntry = table.getEntry("position-x")
-    private val positionYEntry = table.getEntry("position-y") 
-    private val rotationEntry = table.getEntry("rotation-heading") 
+    private val positionYEntry = table.getEntry("position-y")
+    private val rotationEntry = table.getEntry("rotation-heading")
 
     override fun periodic() {
         odometry.update(gyro.rotation2d, wheelpositions)
-        
+
         val pose = currentPose
-        
+
         positionXEntry.setDouble(pose.x)
         positionYEntry.setDouble(pose.y)
         rotationEntry.setDouble(pose.rotation.radians)
+
+        field.robotPose = pose
     }
+
+
 }

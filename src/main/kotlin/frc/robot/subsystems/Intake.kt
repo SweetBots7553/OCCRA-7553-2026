@@ -15,17 +15,11 @@ import frc.robot.constants.kPneumaticChannel
 import frc.robot.constants.kPneumaticHubCANID
 
 object Intake : SubsystemBase() {
-
- 
-    private val solenoid = Solenoid(kPneumaticHubCANID,PneumaticsModuleType.CTREPCM, kPneumaticChannel)
-    // private val commpressor = Compressor(PneumaticsModuleType.CTREPCM)
-
+    private val solenoid = Solenoid(kPneumaticHubCANID, PneumaticsModuleType.CTREPCM, kPneumaticChannel)
     private val intakeMotor = WPI_VictorSPX(kIntakeCANID)
 
     init {
         intakeMotor.configAllSettings(kIntakeConfig)
-        // commpressor.enableDigital()
-        
     }
 
     private fun extend(b: Boolean) {
@@ -52,10 +46,9 @@ object Intake : SubsystemBase() {
             intake(0.0)
         })
     }
-    
+
     private val table = NetworkTableInstance.getDefault().getTable("Intake")
     private val intakeSpeedEntry = table.getEntry("Intake-speed")
-
 
     override fun periodic() {
         intakeSpeedEntry.setDouble(intakeMotor.get())

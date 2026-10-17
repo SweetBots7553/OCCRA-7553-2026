@@ -1,22 +1,23 @@
 package frc.robot.constants
 
-import com.revrobotics.spark.config.FeedForwardConfig
 import com.revrobotics.spark.config.SparkBaseConfig
 import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.units.Units
 import edu.wpi.first.units.measure.Distance
 import kotlin.math.PI
 
+
+// TODO: need to get rev logs from Advantage scope, and use sysid to get the feedforwards, also fix gear ratio, and diameter. 
+
 // m/s
-const val kSpeedFactor = 10.0
+const val kSpeedFactor = 3.0
 const val kRotationSpeedFactor = 0.5
 
 // this is the distance so It can calculate rotation. 
 val kTrackWidth: Distance = Units.Millimeter.of(500.0)
-private val kWheelDiameter: Distance = Units.Millimeters.of(152.4) // this diameter might be wrong
-private const val kGearRatio = 10.75 // idk if its wrong
+private val kWheelDiameter: Distance = Units.Inches.of(6.0)
+private const val kGearRatio = 10.75
 
-// to be determined
 const val kFrontLeftNeo = 23
 const val kFrontRightNeo = 21
 const val kBackLeftNeo = 24
@@ -24,25 +25,23 @@ const val kBackRightNeo = 22
 
 // still need to pid tune
 
-val kTrainConfig: SparkMaxConfig
+val kFrontConfig: SparkMaxConfig
     get() {
         val config = SparkMaxConfig()
+        config.inverted(true)
 
         // So a motor doesn't overclock
         config.smartCurrentLimit(45)
 
         config.closedLoop
-            .pid(0.25, 0.0, 0.1)
+            .pid(0.0, 0.0, 0.0)
             .maxOutput(1.0)
-
 
         val positionFactor = PI * kWheelDiameter.`in`(Units.Meters) / kGearRatio
 
         config.encoder
             .positionConversionFactor(positionFactor)
             .velocityConversionFactor(positionFactor / 60.0)
-
-
 
         config.idleMode(SparkBaseConfig.IdleMode.kCoast)
 
@@ -51,20 +50,17 @@ val kTrainConfig: SparkMaxConfig
 
 val kBackLeftConfig: SparkMaxConfig
     get() {
-        val config = kTrainConfig
-
+        val config = SparkMaxConfig()
+        config.apply(kFrontConfig)
         config.follow(kFrontLeftNeo)
-
         return config
     }
 
 val kBackRightConfig: SparkMaxConfig
     get() {
-        val config = kTrainConfig
-
-        config.inverted(true)
-
+        val config = SparkMaxConfig()
+        config.apply(kFrontConfig)
+        config.inverted(false)
         config.follow(kFrontRightNeo)
-
         return config
     }

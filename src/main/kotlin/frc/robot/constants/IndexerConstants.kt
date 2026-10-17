@@ -12,5 +12,6 @@ val kIndexerConfig: VictorSPXConfiguration
         val config = VictorSPXConfiguration()
 
         
+        
         return config
     }

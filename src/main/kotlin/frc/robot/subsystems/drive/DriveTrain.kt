@@ -7,12 +7,9 @@ import com.revrobotics.spark.SparkLowLevel.MotorType
 import com.revrobotics.spark.SparkMax
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics
-import edu.wpi.first.networktables.NetworkTable
 import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.units.Units
-import edu.wpi.first.units.VoltageUnit
 import edu.wpi.first.units.measure.Voltage
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine
@@ -27,9 +24,7 @@ import frc.robot.constants.kRotationSpeedFactor
 import frc.robot.constants.kSpeedFactor
 
 import frc.robot.constants.kTrackWidth
-import frc.robot.constants.kTrainConfig
-import java.util.function.BooleanSupplier
-import java.util.function.DoubleSupplier
+import frc.robot.constants.kFrontConfig
 import kotlin.math.abs
 
 object DriveTrain : SubsystemBase() {
@@ -41,38 +36,14 @@ object DriveTrain : SubsystemBase() {
     private val backLeftNeo = SparkMax(kBackLeftNeo, MotorType.kBrushless)
     private val backRightNeo = SparkMax(kBackRightNeo, MotorType.kBrushless)
 
+    private val odometry = Odometry(this, frontLeftNeo, frontRightNeo, kinematics)
+
     // config
     init {
-        frontLeftNeo.configure(kTrainConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
-        frontRightNeo.configure(kTrainConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
+        frontLeftNeo.configure(kFrontConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
+        frontRightNeo.configure(kFrontConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
         backLeftNeo.configure(kBackLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
         backRightNeo.configure(kBackRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
-    }
-
-    // NetworkTables
-
-    private val table = NetworkTableInstance.getDefault().getTable("Chassis")
-
-    private val frontLeftMotorEntry = table.getEntry("front-left-motor")
-    private val frontRightMotorEntry = table.getEntry("front-right-motor")
-    private val backLeftMotorEntry = table.getEntry("back-left-motor")
-    private val backRightMotorEntry = table.getEntry("back-right-motor")
-
-    private val frontLeftSetpointEntry = table.getEntry("front-left-setpoint")
-    private val frontRightSetpointEntry = table.getEntry("front-right-setpoint")
-    private val backLeftSetpointEntry = table.getEntry("back-left-setpoint")
-    private val backRightSetpointEntry = table.getEntry("back-right-setpoint")
-
-    override fun periodic() {
-        frontLeftMotorEntry.setDouble(frontLeftNeo.get())
-        frontRightMotorEntry.setDouble(frontRightNeo.get())
-        backLeftMotorEntry.setDouble(backLeftNeo.get())
-        backRightMotorEntry.setDouble(backRightNeo.get())
-
-        frontLeftSetpointEntry.setBoolean(abs(frontLeftNeo.closedLoopController.setpoint) <= abs(frontLeftNeo.get()))
-        frontRightSetpointEntry.setBoolean(abs(frontRightNeo.closedLoopController.setpoint) <= abs(frontRightNeo.get()))
-        backLeftSetpointEntry.setBoolean(abs(backLeftNeo.closedLoopController.setpoint) <= abs(backLeftNeo.get()))
-        backRightSetpointEntry.setBoolean(abs(backRightNeo.closedLoopController.setpoint) <= abs(backRightNeo.get()))
     }
 
     fun drive(x: () -> Double, r: () -> Double): Command {
@@ -114,8 +85,8 @@ object DriveTrain : SubsystemBase() {
 
         val mechanism = SysIdRoutine.Mechanism(
             { voltage ->
-                frontLeftNeo.setVoltage(voltage.`in`(Units.Volts))
-                frontRightNeo.setVoltage(voltage.`in`(Units.Volts))
+                frontLeftNeo.setVoltage(voltage)
+                frontRightNeo.setVoltage(voltage)
             },
             { log ->
 
@@ -170,4 +141,29 @@ object DriveTrain : SubsystemBase() {
         return sysIdDynamic(SysIdRoutine.Direction.kReverse)
     }
 
+    // NetworkTables
+
+    private val table = NetworkTableInstance.getDefault().getTable("Chassis")
+
+    private val frontLeftMotorEntry = table.getEntry("front-left-motor")
+    private val frontRightMotorEntry = table.getEntry("front-right-motor")
+    private val backLeftMotorEntry = table.getEntry("back-left-motor")
+    private val backRightMotorEntry = table.getEntry("back-right-motor")
+
+    private val frontLeftSetpointEntry = table.getEntry("front-left-setpoint")
+    private val frontRightSetpointEntry = table.getEntry("front-right-setpoint")
+    private val backLeftSetpointEntry = table.getEntry("back-left-setpoint")
+    private val backRightSetpointEntry = table.getEntry("back-right-setpoint")
+
+    override fun periodic() {
+        frontLeftMotorEntry.setDouble(frontLeftNeo.get())
+        frontRightMotorEntry.setDouble(frontRightNeo.get())
+        backLeftMotorEntry.setDouble(backLeftNeo.get())
+        backRightMotorEntry.setDouble(backRightNeo.get())
+
+        frontLeftSetpointEntry.setBoolean(abs(frontLeftNeo.closedLoopController.setpoint) <= abs(frontLeftNeo.get()))
+        frontRightSetpointEntry.setBoolean(abs(frontRightNeo.closedLoopController.setpoint) <= abs(frontRightNeo.get()))
+        backLeftSetpointEntry.setBoolean(abs(backLeftNeo.closedLoopController.setpoint) <= abs(backLeftNeo.get()))
+        backRightSetpointEntry.setBoolean(abs(backRightNeo.closedLoopController.setpoint) <= abs(backRightNeo.get()))
+    }
 }

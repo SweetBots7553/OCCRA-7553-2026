@@ -13,7 +13,16 @@ object Robot : TimedRobot() {
     private var robotContainer: RobotContainer? = null
 
     override fun robotInit() {
+        
+        // logging unoffical 
+        // DataLogManager.start()
+        // URCL.start()
+        // URCL.start(DataLogManager.getLog())
+        
+        // saving layouts for elastic
         WebServer.start(5800, Filesystem.getDeployDirectory().canonicalPath)
+        
+        // enabling usb cameras
         CameraServer.startAutomaticCapture()
         
         robotContainer = RobotContainer

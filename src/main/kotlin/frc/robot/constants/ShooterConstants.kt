@@ -22,7 +22,7 @@ val kShooterConfig: SparkFlexConfig
         
         config.closedLoop
             .maxOutput(1.0)
-            .pid(0.1, 0.0, 0.0) 
+            .pid(0.0, 0.0, 0.0) 
             
         val positionFactor = PI * kShooterWheelDiameter.`in`(Units.Meters) 
             

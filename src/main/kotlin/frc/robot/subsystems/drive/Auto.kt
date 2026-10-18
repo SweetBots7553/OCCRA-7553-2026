@@ -1,6 +1,7 @@
 package frc.robot.subsystems.drive
 
 import com.pathplanner.lib.auto.AutoBuilder
+import edu.wpi.first.wpilibj.Filesystem
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
@@ -31,8 +32,11 @@ class Auto(vararg options: String) {
     
 }
 
-// fun getAutosEntries(): Auto {
-    
+// this most likely isn't going to be used, but I thought it would be cool to implement. 
+// fun genAutoEntries(): Auto {
+//     val deployDirectory = Filesystem.getDeployDirectory()
+
+//     deployDirectory.toPath("")
     
     
     

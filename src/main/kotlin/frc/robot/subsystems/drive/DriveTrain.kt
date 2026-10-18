@@ -42,7 +42,7 @@ object DriveTrain : SubsystemBase() {
                 ChassisSpeeds(
                     x() * DriveTrainConstants.kSpeedFactor,
                     0.0,
-                    r() * DriveTrainConstants.kRotationSpeedFactor
+                    r() * DriveTrainConstants.kRotationPerSecond
                 )
             )
         }

@@ -11,7 +11,7 @@ object DriveTrainConstants {
 
     // m/s
     const val kSpeedFactor = 3.0
-    const val kRotationSpeedFactor = 0.5
+    const val kRotationPerSecond = 0.5
 
     // this is the distance so It can calculate rotation. 
     val kTrackWidth: Distance = Units.Millimeter.of(500.0)

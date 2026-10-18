@@ -84,7 +84,8 @@ object RobotContainer {
             return Commands.sequence(extend, intake.intake { -IntakeConstants.kIntakeSpeed }, indexing, shooting, final)
         }
         
-    private val extend = intake.extend()
+    private val extend: Command
+        get() = intake.extend()
 
     // auto
 

@@ -30,6 +30,14 @@ object Intake : SubsystemBase() {
             extend(b())
         }
     }
+    
+    fun extend(): Command {
+        return startRun({
+            extend(true)
+        }, {
+            extend(false)
+        })
+    }
 
     private fun intake(dutycycle: Double) {
         intakeMotor.set(dutycycle)

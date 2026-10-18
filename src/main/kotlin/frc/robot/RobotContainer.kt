@@ -38,9 +38,9 @@ object RobotContainer {
             { MathUtil.applyDeadband(driverController.leftX, threshold) }
         )
 
-        coDriverController.x().whileTrue(outTakeCommand).onFalse(unextend)
-        coDriverController.b().whileTrue(intakeCommand).onFalse(unextend)
-        coDriverController.a().whileTrue(shootCommand).onFalse(unextend)
+        coDriverController.x().whileTrue(outTakeCommand)
+        coDriverController.b().whileTrue(intakeCommand)
+        coDriverController.a().whileTrue(shootCommand)
 
 
         // tmp 
@@ -57,8 +57,6 @@ object RobotContainer {
         NamedCommands.registerCommand("Intake", intakeCommand)
         NamedCommands.registerCommand("OutTake", outTakeCommand)
         NamedCommands.registerCommand("Shoot", shootCommand)
-        NamedCommands.registerCommand("Extend", extend)
-        NamedCommands.registerCommand("UnExtend", unextend)
     }
 
     private val intakeCommand: Command
@@ -84,12 +82,8 @@ object RobotContainer {
 
             return Commands.sequence(extend, intake.intake { -IntakeConstants.kIntakeSpeed }, indexing, shooting, final)
         }
-
-    private val extend: Command
-        get() = intake.extend { true }
-
-    private val unextend: Command
-        get() = intake.extend { false }
+        
+    private val extend = intake.extend()
 
     // auto
 

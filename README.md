@@ -9,3 +9,6 @@ TODO list
         needs wheelCOF / the friction of the wheel find it on the website 
         needs MOI / Moment of inertia, figureout on pathplanner
         needs mass / idk how we're going to get the measurement
+
+NOTE
+    Pathplanner image pixels per meter is -> 157.480314961, it will round it

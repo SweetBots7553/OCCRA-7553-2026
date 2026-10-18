@@ -15,6 +15,7 @@ import frc.robot.subsystems.Indexer
 import frc.robot.subsystems.Intake
 import frc.robot.subsystems.Shooter
 import frc.robot.subsystems.drive.Auto
+import frc.robot.subsystems.drive.genAutoEntries
 
 object RobotContainer {
     // operator controllers
@@ -87,9 +88,7 @@ object RobotContainer {
 
     // auto
 
-    val auto = Auto(
-        "test", 
-    )
+    val auto = genAutoEntries()
     
     val autonomousCommand: Command
         get() = auto.auto

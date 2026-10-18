@@ -33,11 +33,20 @@ class Auto(vararg options: String) {
 }
 
 // this most likely isn't going to be used, but I thought it would be cool to implement. 
-// fun genAutoEntries(): Auto {
-//     val deployDirectory = Filesystem.getDeployDirectory()
+fun genAutoEntries(): Auto {
+    val deployDirectory = Filesystem.getDeployDirectory()
+    val autos = deployDirectory
+        .resolve("pathplanner")
+        .resolve("autos")
 
-//     deployDirectory.toPath("")
-    
-    
-    
-// }
+    val entries = autos.list()
+        ?.mapNotNull { e ->
+            e.removeSuffix(".auto")
+                .takeIf { it.isNotBlank() }
+        }
+        .orEmpty()
+
+    entries.forEach { println(it) }
+
+    return Auto(*entries.toTypedArray())
+}

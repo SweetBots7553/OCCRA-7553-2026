@@ -14,6 +14,7 @@ import frc.robot.subsystems.drive.DriveTrain
 import frc.robot.subsystems.Indexer
 import frc.robot.subsystems.Intake
 import frc.robot.subsystems.Shooter
+import frc.robot.subsystems.drive.Auto
 
 object RobotContainer {
     // operator controllers
@@ -92,12 +93,10 @@ object RobotContainer {
 
     // auto
 
-    private val autoChooser = SendableChooser<String>()
-
-    init {
-        autoChooser.addOption("test", "test")
-    }
-
+    val auto = Auto(
+        "test", 
+    )
+    
     val autonomousCommand: Command
-        get() = AutoBuilder.buildAuto(autoChooser.selected)
+        get() = auto.auto
 }

@@ -17,24 +17,24 @@ private val kShooterWheelDiameter = Units.Millimeters.of(90.0)
 val kShooterConfig: SparkFlexConfig
     get() {
         val config = SparkFlexConfig()
-        
+
         config.smartCurrentLimit(45)
-        
+
         config.closedLoop
             .maxOutput(1.0)
-            .pid(0.0, 0.0, 0.0) 
-            
-        val positionFactor = PI * kShooterWheelDiameter.`in`(Units.Meters) 
-            
+            .pid(0.0, 0.0, 0.0)
+
+        val positionFactor = PI * kShooterWheelDiameter.`in`(Units.Meters)
+
         config.encoder
             .positionConversionFactor(positionFactor)
             .velocityConversionFactor(positionFactor / 60.0)
-        
-        
-        config.idleMode(SparkBaseConfig.IdleMode.kCoast)    
-        
+
+
+        config.idleMode(SparkBaseConfig.IdleMode.kCoast)
+
         return config
-        
+
     }
 
 

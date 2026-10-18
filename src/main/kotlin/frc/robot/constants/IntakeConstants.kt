@@ -6,7 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPXConfiguration
 const val kIntakeSpeed = 0.5
 const val kIntakeCANID = 31
 
-val kIntakeConfig: VictorSPXConfiguration 
+val kIntakeConfig: VictorSPXConfiguration
     get() {
         val config = VictorSPXConfiguration()
 

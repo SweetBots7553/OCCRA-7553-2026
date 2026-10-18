@@ -11,7 +11,5 @@ val kIndexerConfig: VictorSPXConfiguration
     get() {
         val config = VictorSPXConfiguration()
 
-        
-        
         return config
     }

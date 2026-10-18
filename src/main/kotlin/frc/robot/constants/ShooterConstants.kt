@@ -7,35 +7,34 @@ import edu.wpi.first.units.Units
 import edu.wpi.first.units.measure.Distance
 import kotlin.math.PI
 
-const val kShooterMotorCANID = 33
+object ShooterConstants  {
+    const val kShooterMotorCANID = 33
 
-// m/s 
-const val kShooterSpeed = 0.1
-private val kShooterWheelDiameter = Units.Millimeters.of(90.0)
+    // m/s 
+    const val kShooterSpeed = 0.1
+    private val kShooterWheelDiameter = Units.Millimeters.of(90.0)
 
-// likely to be a sparkmax, but idk 
-val kShooterConfig: SparkFlexConfig
-    get() {
-        val config = SparkFlexConfig()
+    // likely to be a sparkmax, but idk 
+    val kShooterConfig: SparkFlexConfig
+        get() {
+            val config = SparkFlexConfig()
 
-        config.smartCurrentLimit(45)
+            config.smartCurrentLimit(45)
 
-        config.closedLoop
-            .maxOutput(1.0)
-            .pid(0.0, 0.0, 0.0)
+            config.closedLoop
+                .maxOutput(1.0)
+                .pid(0.0, 0.0, 0.0)
 
-        val positionFactor = PI * kShooterWheelDiameter.`in`(Units.Meters)
+            val positionFactor = PI * kShooterWheelDiameter.`in`(Units.Meters)
 
-        config.encoder
-            .positionConversionFactor(positionFactor)
-            .velocityConversionFactor(positionFactor / 60.0)
-
-
-        config.idleMode(SparkBaseConfig.IdleMode.kCoast)
-
-        return config
-
-    }
+            config.encoder
+                .positionConversionFactor(positionFactor)
+                .velocityConversionFactor(positionFactor / 60.0)
 
 
+            config.idleMode(SparkBaseConfig.IdleMode.kCoast)
 
+            return config
+
+        }
+}

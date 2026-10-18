@@ -1,5 +1,6 @@
 package frc.robot
 
+import com.pathplanner.lib.auto.AutoBuilder
 import com.pathplanner.lib.auto.NamedCommands
 import edu.wpi.first.math.MathUtil
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
@@ -7,10 +8,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
-import frc.robot.constants.kCoDriverPort
-import frc.robot.constants.kDeadbandThreshold
-import frc.robot.constants.kDriverPort
-import frc.robot.constants.kIntakeSpeed
+import frc.robot.constants.IntakeConstants
+import frc.robot.constants.OperatorConstats
 import frc.robot.subsystems.drive.DriveTrain
 import frc.robot.subsystems.Indexer
 import frc.robot.subsystems.Intake
@@ -18,8 +17,8 @@ import frc.robot.subsystems.Shooter
 
 object RobotContainer {
     // operator controllers
-    private val driverController = CommandXboxController(kDriverPort)
-    private val coDriverController = CommandXboxController(kCoDriverPort)
+    private val driverController = CommandXboxController(OperatorConstats.kDriverPort)
+    private val coDriverController = CommandXboxController(OperatorConstats.kCoDriverPort)
 
     // subsystems
     private val driveTrain = DriveTrain
@@ -29,10 +28,13 @@ object RobotContainer {
 
     // controls
     init {
+        
+        val threshold = OperatorConstats.kDeadbandThreshold
+        
         // arcade control
         driveTrain.defaultCommand = driveTrain.drive(
-            { MathUtil.applyDeadband(driverController.rightY, kDeadbandThreshold) },
-            { MathUtil.applyDeadband(driverController.leftX, kDeadbandThreshold) }
+            { MathUtil.applyDeadband(driverController.rightY, threshold) },
+            { MathUtil.applyDeadband(driverController.leftX, threshold) }
         )
 
         coDriverController.x().whileTrue(outTakeCommand).onFalse(unextend)
@@ -60,26 +62,26 @@ object RobotContainer {
 
     private val intakeCommand: Command
         get() {
-            val intake = Commands.parallel(indexer.index { -kIntakeSpeed }, intake.intake { -kIntakeSpeed })
+            val intake = Commands.parallel(indexer.index { -IntakeConstants.kIntakeSpeed }, intake.intake { -IntakeConstants.kIntakeSpeed })
 
             return Commands.sequence(extend, intake)
 
         }
     private val outTakeCommand: Command
         get() {
-            val outTake = Commands.parallel(indexer.index { kIntakeSpeed }, intake.intake { kIntakeSpeed })
+            val outTake = Commands.parallel(indexer.index { IntakeConstants.kIntakeSpeed }, intake.intake { IntakeConstants.kIntakeSpeed })
 
             return Commands.sequence(extend, outTake)
         }
 
     private val shootCommand: Command
         get() {
-            val indexing = indexer.index { kIntakeSpeed }.withTimeout(1.0).andThen(indexer.index { 0.0 })
+            val indexing = indexer.index { IntakeConstants.kIntakeSpeed }.withTimeout(1.0).andThen(indexer.index { 0.0 })
             val shooting = shooter.shoot().withTimeout(1.0)
 
-            val final = indexer.index { -kIntakeSpeed }
+            val final = indexer.index { -IntakeConstants.kIntakeSpeed }
 
-            return Commands.sequence(extend, intake.intake { -kIntakeSpeed }, indexing, shooting, final)
+            return Commands.sequence(extend, intake.intake { -IntakeConstants.kIntakeSpeed }, indexing, shooting, final)
         }
 
     private val extend: Command
@@ -96,12 +98,6 @@ object RobotContainer {
         autoChooser.addOption("test", "test")
     }
 
-
-    // val autonomousCommand: Command
-    //     get() = AutoBuilder.buildAuto(autoChooser.selected)
-
     val autonomousCommand: Command
-        get() = Commands.none()
-
-
+        get() = AutoBuilder.buildAuto(autoChooser.selected)
 }

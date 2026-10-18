@@ -13,16 +13,14 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine
-import frc.robot.constants.kShooterConfig
-import frc.robot.constants.kShooterMotorCANID
-import frc.robot.constants.kShooterSpeed
+import frc.robot.constants.ShooterConstants
 
 object Shooter : SubsystemBase() {
 
-    private val shooterMotor = SparkFlex(kShooterMotorCANID, SparkLowLevel.MotorType.kBrushless)
+    private val shooterMotor = SparkFlex(ShooterConstants.kShooterMotorCANID, SparkLowLevel.MotorType.kBrushless)
 
     init {
-        shooterMotor.configure(kShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
+        shooterMotor.configure(ShooterConstants.kShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
     }
 
     private fun shoot(dutycycle: Double) {
@@ -31,7 +29,7 @@ object Shooter : SubsystemBase() {
 
     fun shoot(): Command {
         return startEnd({
-            shoot(kShooterSpeed)
+            shoot(ShooterConstants.kShooterSpeed)
         }, {
             shoot(0.0)
         })

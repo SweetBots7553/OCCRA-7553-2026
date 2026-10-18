@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.SubsystemBase
-import frc.robot.constants.kPathController
+import frc.robot.constants.OdometryConstants
 
 class Odometry(
     driveTrain: DriveTrain,
@@ -75,7 +75,7 @@ class Odometry(
             { speeds: ChassisSpeeds, _: DriveFeedforwards ->
                 driveTrain.drive(speeds)
             },
-            kPathController,
+            OdometryConstants.kPathController,
             config,
             { false }, // this will be set to true during comp
             driveTrain

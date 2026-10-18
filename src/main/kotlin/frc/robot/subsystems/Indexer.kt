@@ -6,15 +6,14 @@ import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
-import frc.robot.constants.kIndexerConfig
-import frc.robot.constants.kIndexerMotorCANID
+import frc.robot.constants.IndexerConstants
 
 object Indexer : SubsystemBase() {
 
-    private val indexerMotor = WPI_VictorSPX(kIndexerMotorCANID)
+    private val indexerMotor = WPI_VictorSPX(IndexerConstants.kIndexerMotorCANID)
 
     init {
-        indexerMotor.configAllSettings(kIndexerConfig)
+        indexerMotor.configAllSettings(IndexerConstants.kIndexerConfig)
     }
 
     private fun index(dutycycle: Double) {

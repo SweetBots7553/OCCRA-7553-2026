@@ -13,46 +13,36 @@ import edu.wpi.first.units.measure.Voltage
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine
-import frc.robot.constants.kBackLeftConfig
-import frc.robot.constants.kBackLeftNeo
-import frc.robot.constants.kBackRightConfig
-import frc.robot.constants.kBackRightNeo
-import frc.robot.constants.kFrontLeftNeo
-import frc.robot.constants.kFrontRightNeo
-import frc.robot.constants.kRotationSpeedFactor
+import frc.robot.constants.DriveTrainConstants
 
-import frc.robot.constants.kSpeedFactor
-
-import frc.robot.constants.kTrackWidth
-import frc.robot.constants.kFrontConfig
 import kotlin.math.abs
 
 object DriveTrain : SubsystemBase() {
 
-    private val kinematics = DifferentialDriveKinematics(kTrackWidth)
+    private val kinematics = DifferentialDriveKinematics(DriveTrainConstants.kTrackWidth)
 
-    private val frontLeftNeo = SparkMax(kFrontLeftNeo, MotorType.kBrushless)
-    private val frontRightNeo = SparkMax(kFrontRightNeo, MotorType.kBrushless)
-    private val backLeftNeo = SparkMax(kBackLeftNeo, MotorType.kBrushless)
-    private val backRightNeo = SparkMax(kBackRightNeo, MotorType.kBrushless)
+    private val frontLeftNeo = SparkMax(DriveTrainConstants.kFrontLeftNeoCANID, MotorType.kBrushless)
+    private val frontRightNeo = SparkMax(DriveTrainConstants.kFrontRightNeoCANID, MotorType.kBrushless)
+    private val backLeftNeo = SparkMax(DriveTrainConstants.kBackLeftNeoCANID, MotorType.kBrushless)
+    private val backRightNeo = SparkMax(DriveTrainConstants.kBackRightNeoCANID, MotorType.kBrushless)
 
     private val odometry = Odometry(this, frontLeftNeo, frontRightNeo, kinematics)
 
     // config
     init {
-        frontLeftNeo.configure(kFrontConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
-        frontRightNeo.configure(kFrontConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
-        backLeftNeo.configure(kBackLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
-        backRightNeo.configure(kBackRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
+        frontLeftNeo.configure(DriveTrainConstants.kFrontConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
+        frontRightNeo.configure(DriveTrainConstants.kFrontConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
+        backLeftNeo.configure(DriveTrainConstants.kBackLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
+        backRightNeo.configure(DriveTrainConstants.kBackRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
     }
 
     fun drive(x: () -> Double, r: () -> Double): Command {
         return run {
             drive(
                 ChassisSpeeds(
-                    x() * kSpeedFactor,
+                    x() * DriveTrainConstants.kSpeedFactor,
                     0.0,
-                    r() * kRotationSpeedFactor
+                    r() * DriveTrainConstants.kRotationSpeedFactor
                 )
             )
         }

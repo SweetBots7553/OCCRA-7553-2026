@@ -37,7 +37,7 @@ object Shooter : SubsystemBase() {
             shoot(0.0)
         })
     }
-
+    
     // sysid
 
     private val routine: SysIdRoutine

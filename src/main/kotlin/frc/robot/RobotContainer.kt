@@ -82,13 +82,11 @@ object RobotContainer {
 
     private val shootCommand: Command
         get() {
+            val load = Commands.sequence(extend, indexer.index { IntakeConstants.kIntakeSpeed }.alongWith(Commands.waitSeconds(0.2).andThen(intakeCommand)))
+            
             return Commands.parallel(
                 shooter.shoot(), 
-                    Commands.sequence(
-                        indexer.index { -IntakeConstants.kIntakeSpeed }, 
-                        Commands.waitSeconds(0.6),
-                        intakeCommand
-                    )
+                    load,
                 )
         }
         

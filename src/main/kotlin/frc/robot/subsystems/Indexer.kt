@@ -30,11 +30,4 @@ object Indexer : SubsystemBase() {
             index(0.0)
         })
     }
-
-    private val table = NetworkTableInstance.getDefault().getTable("Indexer")
-    private val intakeSpeedEntry = table.getEntry("Indexer-speed")
-
-    override fun periodic() {
-        intakeSpeedEntry.setDouble(indexerMotor.get())
-    }
 }

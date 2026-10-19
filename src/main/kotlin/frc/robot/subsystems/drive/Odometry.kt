@@ -77,7 +77,7 @@ class Odometry(
             },
             OdometryConstants.kPathController,
             config,
-            { false }, // this will be set to true during comp
+            { true }, // this will be set to true during comp
             driveTrain
         )
     }
@@ -98,9 +98,7 @@ class Odometry(
     override fun periodic() {
         odometry.update(gyro.rotation2d, wheelpositions)
 
-        val pose = currentPose
-
-        field.robotPose = pose
+        field.robotPose = currentPose
     }
 
 

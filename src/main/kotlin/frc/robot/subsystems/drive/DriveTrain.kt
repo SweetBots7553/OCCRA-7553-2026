@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics
 import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.units.Units
 import edu.wpi.first.units.measure.Voltage
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine
@@ -34,6 +35,16 @@ object DriveTrain : SubsystemBase() {
         frontRightNeo.configure(DriveTrainConstants.kFrontConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
         backLeftNeo.configure(DriveTrainConstants.kBackLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
         backRightNeo.configure(DriveTrainConstants.kBackRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
+
+        SmartDashboard.putNumber("chassis/speeds/Front_left", frontLeftNeo.get())
+        SmartDashboard.putNumber("chassis/speeds/Front_right", frontRightNeo.get())
+        SmartDashboard.putNumber("chassis/speeds/Back_left", backLeftNeo.get())
+        SmartDashboard.putNumber("chassis/speeds/Back_right", backRightNeo.get())
+
+        SmartDashboard.putNumber("chassis/setpoints/Front_left_setpoint", frontLeftNeo.closedLoopController.setpoint)
+        SmartDashboard.putNumber("chassis/setpoints/Front_right_setpoint", frontRightNeo.closedLoopController.setpoint)
+        SmartDashboard.putNumber("chassis/setpoints/Back_left_setpoint", backLeftNeo.closedLoopController.setpoint)
+        SmartDashboard.putNumber("chassis/setpoints/Back_right_setpoint", backRightNeo.closedLoopController.setpoint)
     }
 
     fun drive(x: () -> Double, r: () -> Double): Command {
@@ -129,31 +140,5 @@ object DriveTrain : SubsystemBase() {
 
     fun reversesysIdDynamic(): Command {
         return sysIdDynamic(SysIdRoutine.Direction.kReverse)
-    }
-
-    // NetworkTables
-
-    private val table = NetworkTableInstance.getDefault().getTable("Chassis")
-
-    private val frontLeftMotorEntry = table.getEntry("front-left-motor")
-    private val frontRightMotorEntry = table.getEntry("front-right-motor")
-    private val backLeftMotorEntry = table.getEntry("back-left-motor")
-    private val backRightMotorEntry = table.getEntry("back-right-motor")
-
-    private val frontLeftSetpointEntry = table.getEntry("front-left-setpoint")
-    private val frontRightSetpointEntry = table.getEntry("front-right-setpoint")
-    private val backLeftSetpointEntry = table.getEntry("back-left-setpoint")
-    private val backRightSetpointEntry = table.getEntry("back-right-setpoint")
-
-    override fun periodic() {
-        frontLeftMotorEntry.setDouble(frontLeftNeo.get())
-        frontRightMotorEntry.setDouble(frontRightNeo.get())
-        backLeftMotorEntry.setDouble(backLeftNeo.get())
-        backRightMotorEntry.setDouble(backRightNeo.get())
-
-        frontLeftSetpointEntry.setBoolean(abs(frontLeftNeo.closedLoopController.setpoint) <= abs(frontLeftNeo.get()))
-        frontRightSetpointEntry.setBoolean(abs(frontRightNeo.closedLoopController.setpoint) <= abs(frontRightNeo.get()))
-        backLeftSetpointEntry.setBoolean(abs(backLeftNeo.closedLoopController.setpoint) <= abs(backLeftNeo.get()))
-        backRightSetpointEntry.setBoolean(abs(backRightNeo.closedLoopController.setpoint) <= abs(backRightNeo.get()))
     }
 }

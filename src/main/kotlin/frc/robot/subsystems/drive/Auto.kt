@@ -18,7 +18,7 @@ class Auto(vararg options: String) {
             autoChooser.addOption(o, o)    
         }
 
-        SmartDashboard.putData { autoChooser }
+        SmartDashboard.putData("Auto/Auto_Chooser", autoChooser)
     }
     
     val auto: Command 
@@ -40,8 +40,8 @@ fun genAutoEntries(): Auto {
         .resolve("autos")
 
     val entries = autos.list()
-        ?.mapNotNull { e ->
-            e.removeSuffix(".auto")
+        ?.mapNotNull { auto ->
+            auto.removeSuffix(".auto")
                 .takeIf { it.isNotBlank() }
         }
         .orEmpty()

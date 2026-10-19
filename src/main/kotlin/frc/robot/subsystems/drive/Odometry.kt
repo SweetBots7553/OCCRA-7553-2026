@@ -89,22 +89,16 @@ class Odometry(
 
     init {
         SmartDashboard.putData("odometry/odometry-field", field)
+
+        SmartDashboard.putNumber("odometry/pose/x", currentPose.x)
+        SmartDashboard.putNumber("odometry/pose/y", currentPose.y)
+        SmartDashboard.putNumber("odometry/pose/rotation", currentPose.rotation.radians)
     }
-
-    private val table = NetworkTableInstance.getDefault().getTable("Odometry")
-
-    private val positionXEntry = table.getEntry("position-x")
-    private val positionYEntry = table.getEntry("position-y")
-    private val rotationEntry = table.getEntry("rotation-heading")
 
     override fun periodic() {
         odometry.update(gyro.rotation2d, wheelpositions)
 
         val pose = currentPose
-
-        positionXEntry.setDouble(pose.x)
-        positionYEntry.setDouble(pose.y)
-        rotationEntry.setDouble(pose.rotation.radians)
 
         field.robotPose = pose
     }

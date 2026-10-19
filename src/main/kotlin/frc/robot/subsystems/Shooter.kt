@@ -10,6 +10,7 @@ import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.units.Units
 import edu.wpi.first.units.measure.Voltage
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine
@@ -21,6 +22,8 @@ object Shooter : SubsystemBase() {
 
     init {
         shooterMotor.configure(ShooterConstants.kShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
+
+        SmartDashboard.putNumber("Shooter/Shooter_Motor", shooterMotor.get())
     }
 
     private fun shoot(dutycycle: Double) {
@@ -33,15 +36,6 @@ object Shooter : SubsystemBase() {
         }, {
             shoot(0.0)
         })
-    }
-
-    // network data
-
-    private val table = NetworkTableInstance.getDefault().getTable("Shooter")
-    private val shooterEntry = table.getEntry("Shooter")
-
-    override fun periodic() {
-        shooterEntry.setDouble(shooterMotor.get())
     }
 
     // sysid

@@ -36,15 +36,15 @@ object DriveTrain : SubsystemBase() {
         backLeftNeo.configure(DriveTrainConstants.kBackLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
         backRightNeo.configure(DriveTrainConstants.kBackRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
 
-        SmartDashboard.putNumber("chassis/speeds/Front_left", frontLeftNeo.get())
-        SmartDashboard.putNumber("chassis/speeds/Front_right", frontRightNeo.get())
-        SmartDashboard.putNumber("chassis/speeds/Back_left", backLeftNeo.get())
-        SmartDashboard.putNumber("chassis/speeds/Back_right", backRightNeo.get())
+        SmartDashboard.putNumber("chassis/speeds/Front_left_Velocity", frontLeftNeo.encoder.velocity)
+        SmartDashboard.putNumber("chassis/speeds/Front_right_Velocity", frontRightNeo.encoder.velocity)
+        SmartDashboard.putNumber("chassis/speeds/Back_left_Velocity", backLeftNeo.encoder.velocity)
+        SmartDashboard.putNumber("chassis/speeds/Back_right_Velocity", backRightNeo.encoder.velocity)
 
-        SmartDashboard.putNumber("chassis/setpoints/Front_left_setpoint", frontLeftNeo.closedLoopController.setpoint)
-        SmartDashboard.putNumber("chassis/setpoints/Front_right_setpoint", frontRightNeo.closedLoopController.setpoint)
-        SmartDashboard.putNumber("chassis/setpoints/Back_left_setpoint", backLeftNeo.closedLoopController.setpoint)
-        SmartDashboard.putNumber("chassis/setpoints/Back_right_setpoint", backRightNeo.closedLoopController.setpoint)
+        SmartDashboard.putNumber("chassis/setpoints/Front_left_Setpoint", frontLeftNeo.closedLoopController.setpoint)
+        SmartDashboard.putNumber("chassis/setpoints/Front_right_Setpoint", frontRightNeo.closedLoopController.setpoint)
+        SmartDashboard.putNumber("chassis/setpoints/Back_left_Setpoint", backLeftNeo.closedLoopController.setpoint)
+        SmartDashboard.putNumber("chassis/setpoints/Back_right_Setpoint", backRightNeo.closedLoopController.setpoint)
     }
 
     fun drive(x: () -> Double, r: () -> Double): Command {

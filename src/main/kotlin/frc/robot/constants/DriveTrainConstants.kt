@@ -31,7 +31,7 @@ object DriveTrainConstants {
             // config.inverted(true)
 
             // So a motor doesn't overclock
-            config.smartCurrentLimit(45)
+            config.smartCurrentLimit(60)
 
             config.closedLoop
                 .pid(1.0, 0.0, 0.02)

@@ -36,11 +36,7 @@ object RobotContainer {
         // arcade control
         driveTrain.defaultCommand = driveTrain.drive(
             { MathUtil.applyDeadband(driverController.leftY, threshold) },
-            { 
-
-                MathUtil.applyDeadband(driverController.rightX, threshold)
-
-                }
+            { MathUtil.applyDeadband(driverController.rightX, threshold) }
         )
         
 
@@ -65,13 +61,16 @@ object RobotContainer {
         NamedCommands.registerCommand("Intake", intakeCommand)
         NamedCommands.registerCommand("OutTake", outTakeCommand)
         NamedCommands.registerCommand("Shoot", shootCommand)
+        NamedCommands.registerCommand("Extend", extend)
+        NamedCommands.registerCommand("UnExtend", unextend)
+        
     }
 
     private val intakeCommand: Command
         get() {
             val intake = Commands.parallel(indexer.index { -IntakeConstants.kIntakeSpeed }, intake.intake { IntakeConstants.kIntakeSpeed })
 
-            return Commands.sequence(extend, intake)
+            return Commands.sequence(extend, intake.onlyWhile { !indexer.ballDetected() })
 
         }
     private val outTakeCommand: Command
@@ -83,7 +82,14 @@ object RobotContainer {
 
     private val shootCommand: Command
         get() {
-            return Commands.parallel(shooter.shoot(), Commands.waitSeconds(0.6).andThen(intakeCommand))
+            return Commands.parallel(
+                shooter.shoot(), 
+                    Commands.sequence(
+                        indexer.index { -IntakeConstants.kIntakeSpeed }, 
+                        Commands.waitSeconds(0.6),
+                        intakeCommand
+                    )
+                )
         }
         
     private val extend: Command

@@ -7,6 +7,8 @@ import kotlin.math.PI
 
 object IndexerConstants {
     const val kIndexerMotorCANID = 32
+    
+    const val kIndexerSensorChannel = 1
 
     val kIndexerConfig: VictorSPXConfiguration
         get() {

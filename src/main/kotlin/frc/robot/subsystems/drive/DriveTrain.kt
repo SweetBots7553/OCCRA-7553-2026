@@ -138,7 +138,7 @@ object DriveTrain : SubsystemBase() {
     }
 
     override fun periodic() {
-           SmartDashboard.putNumber("chassis/speeds/Front_left_Velocity", frontLeftNeo.encoder.velocity)
+        SmartDashboard.putNumber("chassis/speeds/Front_left_Velocity", frontLeftNeo.encoder.velocity)
         SmartDashboard.putNumber("chassis/speeds/Front_right_Velocity", frontRightNeo.encoder.velocity)
         SmartDashboard.putNumber("chassis/speeds/Back_left_Velocity", backLeftNeo.encoder.velocity)
         SmartDashboard.putNumber("chassis/speeds/Back_right_Velocity", backRightNeo.encoder.velocity)

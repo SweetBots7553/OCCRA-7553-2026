@@ -35,18 +35,18 @@ object RobotContainer {
         
         // arcade control
         driveTrain.defaultCommand = driveTrain.drive(
-            { MathUtil.applyDeadband(driverController.rightY, threshold) },
+            { MathUtil.applyDeadband(driverController.leftY, threshold) },
             { 
-                val strafe = MathUtil.applyDeadband(driverController.rightX, threshold)
-                val turn = MathUtil.applyDeadband(driverController.leftX, threshold)
 
-                MathUtil.clamp(strafe + turn, -1.0, 1.0)
+                MathUtil.applyDeadband(driverController.rightX, threshold)
+
                 }
         )
+        
 
-        coDriverController.x().whileTrue(outTakeCommand)
-        coDriverController.b().whileTrue(intakeCommand)
-        coDriverController.a().whileTrue(shootCommand)
+        coDriverController.leftBumper().whileTrue(outTakeCommand).onFalse(unextend)
+        coDriverController.rightBumper().whileTrue(intakeCommand).onFalse(unextend)
+        coDriverController.a().whileTrue(shootCommand).onFalse(unextend)
 
 
         // tmp 
@@ -55,6 +55,8 @@ object RobotContainer {
 
         // driverController.a().whileTrue(driveTrain.forwardsysIdDynamic())
         // driverController.b().whileTrue(driveTrain.reversesysIdDynamic())
+        
+        // driverController.a().whileTrue(shooter.forwardsysIdQuasistatic())
     }
     // commands
 
@@ -67,30 +69,28 @@ object RobotContainer {
 
     private val intakeCommand: Command
         get() {
-            val intake = Commands.parallel(indexer.index { -IntakeConstants.kIntakeSpeed }, intake.intake { -IntakeConstants.kIntakeSpeed })
+            val intake = Commands.parallel(indexer.index { -IntakeConstants.kIntakeSpeed }, intake.intake { IntakeConstants.kIntakeSpeed })
 
             return Commands.sequence(extend, intake)
 
         }
     private val outTakeCommand: Command
         get() {
-            val outTake = Commands.parallel(indexer.index { IntakeConstants.kIntakeSpeed }, intake.intake { IntakeConstants.kIntakeSpeed })
+            val outTake = Commands.parallel(indexer.index { IntakeConstants.kIntakeSpeed }, intake.intake { -IntakeConstants.kIntakeSpeed })
 
             return Commands.sequence(extend, outTake)
         }
 
     private val shootCommand: Command
         get() {
-            val indexing = indexer.index { IntakeConstants.kIntakeSpeed }.withTimeout(1.0).andThen(indexer.index { 0.0 })
-            val shooting = shooter.shoot().withTimeout(1.0)
-
-            val final = indexer.index { -IntakeConstants.kIntakeSpeed }
-
-            return Commands.sequence(extend, intake.intake { -IntakeConstants.kIntakeSpeed }, indexing, shooting, final)
+            return Commands.parallel(shooter.shoot(), Commands.waitSeconds(0.6).andThen(intakeCommand))
         }
         
     private val extend: Command
-        get() = intake.extend()
+        get() = intake.extend { true }
+        
+    private val unextend: Command 
+        get() = intake.extend { false }
 
     // auto
 

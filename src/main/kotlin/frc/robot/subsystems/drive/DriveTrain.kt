@@ -32,28 +32,20 @@ object DriveTrain : SubsystemBase() {
     // config
     init {
         frontLeftNeo.configure(DriveTrainConstants.kFrontConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
-        frontRightNeo.configure(DriveTrainConstants.kFrontConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
+        frontRightNeo.configure(DriveTrainConstants.kFrontRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
         backLeftNeo.configure(DriveTrainConstants.kBackLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
         backRightNeo.configure(DriveTrainConstants.kBackRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
 
-        SmartDashboard.putNumber("chassis/speeds/Front_left_Velocity", frontLeftNeo.encoder.velocity)
-        SmartDashboard.putNumber("chassis/speeds/Front_right_Velocity", frontRightNeo.encoder.velocity)
-        SmartDashboard.putNumber("chassis/speeds/Back_left_Velocity", backLeftNeo.encoder.velocity)
-        SmartDashboard.putNumber("chassis/speeds/Back_right_Velocity", backRightNeo.encoder.velocity)
-
-        SmartDashboard.putNumber("chassis/setpoints/Front_left_Setpoint", frontLeftNeo.closedLoopController.setpoint)
-        SmartDashboard.putNumber("chassis/setpoints/Front_right_Setpoint", frontRightNeo.closedLoopController.setpoint)
-        SmartDashboard.putNumber("chassis/setpoints/Back_left_Setpoint", backLeftNeo.closedLoopController.setpoint)
-        SmartDashboard.putNumber("chassis/setpoints/Back_right_Setpoint", backRightNeo.closedLoopController.setpoint)
+     
     }
 
     fun drive(x: () -> Double, r: () -> Double): Command {
         return run {
             drive(
                 ChassisSpeeds(
-                    x() * DriveTrainConstants.kSpeedFactor,
+                    x() * DriveTrainConstants.kRotationPerSecond,
                     0.0,
-                    r() * DriveTrainConstants.kRotationPerSecond
+                    r() * DriveTrainConstants.kSpeedFactor
                 )
             )
         }
@@ -68,7 +60,10 @@ object DriveTrain : SubsystemBase() {
 
         frontLeftNeo.closedLoopController.setSetpoint(leftSpeed, SparkBase.ControlType.kVelocity)
         frontRightNeo.closedLoopController.setSetpoint(rightSpeed, SparkBase.ControlType.kVelocity)
+        backLeftNeo.closedLoopController.setSetpoint(leftSpeed, SparkBase.ControlType.kVelocity)
+        backRightNeo.closedLoopController.setSetpoint(rightSpeed, SparkBase.ControlType.kVelocity)
     }
+    
 
     fun stop() {
         drive(ChassisSpeeds())
@@ -140,5 +135,17 @@ object DriveTrain : SubsystemBase() {
 
     fun reversesysIdDynamic(): Command {
         return sysIdDynamic(SysIdRoutine.Direction.kReverse)
+    }
+
+    override fun periodic() {
+           SmartDashboard.putNumber("chassis/speeds/Front_left_Velocity", frontLeftNeo.encoder.velocity)
+        SmartDashboard.putNumber("chassis/speeds/Front_right_Velocity", frontRightNeo.encoder.velocity)
+        SmartDashboard.putNumber("chassis/speeds/Back_left_Velocity", backLeftNeo.encoder.velocity)
+        SmartDashboard.putNumber("chassis/speeds/Back_right_Velocity", backRightNeo.encoder.velocity)
+
+        SmartDashboard.putNumber("chassis/setpoints/Front_left_Setpoint", frontLeftNeo.closedLoopController.setpoint)
+        SmartDashboard.putNumber("chassis/setpoints/Front_right_Setpoint", frontRightNeo.closedLoopController.setpoint)
+        SmartDashboard.putNumber("chassis/setpoints/Back_left_Setpoint", backLeftNeo.closedLoopController.setpoint)
+        SmartDashboard.putNumber("chassis/setpoints/Back_right_Setpoint", backRightNeo.closedLoopController.setpoint)
     }
 }

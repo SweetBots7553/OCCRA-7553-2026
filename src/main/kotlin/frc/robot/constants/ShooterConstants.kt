@@ -11,13 +11,17 @@ object ShooterConstants  {
     const val kShooterMotorCANID = 33
 
     // m/s 
-    const val kShooterSpeed = 0.1
+    const val kShooterSpeed = 0.5
     private val kShooterWheelDiameter = Units.Millimeters.of(90.0)
 
     // likely to be a sparkmax, but idk 
     val kShooterConfig: SparkFlexConfig
         get() {
             val config = SparkFlexConfig()
+            
+            config.inverted(true)
+            
+            
 
             config.smartCurrentLimit(45)
 

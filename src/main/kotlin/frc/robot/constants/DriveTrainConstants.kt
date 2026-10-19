@@ -10,8 +10,8 @@ object DriveTrainConstants {
     // TODO: need to get rev logs from Advantage scope, and use sysid to get the feedforwards, also fix gear ratio, and diameter. 
 
     // m/s
-    const val kSpeedFactor = 3.0
-    const val kRotationPerSecond = 0.5
+    const val kSpeedFactor = 5.0
+    const val kRotationPerSecond = 1 
 
     // this is the distance so It can calculate rotation. 
     val kTrackWidth: Distance = Units.Millimeter.of(500.0)
@@ -34,7 +34,7 @@ object DriveTrainConstants {
             config.smartCurrentLimit(45)
 
             config.closedLoop
-                .pid(0.0, 0.0, 0.0)
+                .pid(1.0, 0.0, 0.02)
                 .maxOutput(1.0)
 
             val positionFactor = PI * kWheelDiameter.`in`(Units.Meters) / kGearRatio
@@ -52,16 +52,29 @@ object DriveTrainConstants {
         get() {
             val config = SparkMaxConfig()
             config.apply(kFrontConfig)
-            config.follow(kFrontLeftNeoCANID)
+            
+            
             return config
         }
 
+    val kFrontRightConfig: SparkMaxConfig
+        get() {
+            val config = SparkMaxConfig()
+            config.apply(kFrontConfig)
+            
+            config.inverted(true)
+            
+            return config
+        }
+
+        
     val kBackRightConfig: SparkMaxConfig
         get() {
             val config = SparkMaxConfig()
             config.apply(kFrontConfig)
+            
             config.inverted(true)
-            config.follow(kFrontRightNeoCANID)
+
             return config
         }
 } 

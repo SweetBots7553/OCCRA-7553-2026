@@ -21,8 +21,6 @@ object ShooterConstants  {
             
             config.inverted(true)
             
-            
-
             config.smartCurrentLimit(45)
 
             config.closedLoop

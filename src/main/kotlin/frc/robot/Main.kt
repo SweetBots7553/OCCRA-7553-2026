@@ -2,6 +2,7 @@ package frc.robot
 
 import edu.wpi.first.hal.FRCNetComm
 import edu.wpi.first.hal.HAL
+import edu.wpi.first.wpilibj.Filesystem
 import edu.wpi.first.wpilibj.RobotBase
 
 /**
@@ -18,6 +19,13 @@ object Main {
      */
     @JvmStatic
     fun main(args: Array<String>) {
+        
+        val imgs = Filesystem.getDeployDirectory().resolve("imgs")
+        
+        if (!imgs.resolve("coconut.jpg").exists()) 
+            return 
+
+        
         RobotBase.startRobot {
             HAL.report(FRCNetComm.tResourceType.kResourceType_Language, FRCNetComm.tInstances.kLanguage_Kotlin)
             Robot

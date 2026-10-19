@@ -69,8 +69,6 @@ class Odometry(
         // disable holographic movement 
         val config = RobotConfig.fromGUISettings()
         
-        val shouldFlip = DriverStation.getAlliance().get() == DriverStation.Alliance.Red
-
         AutoBuilder.configure(
             { currentPose },
             { resetPose },
@@ -80,7 +78,10 @@ class Odometry(
             },
             OdometryConstants.kPathController,
             config,
-            { shouldFlip }, // this will be set to true during comp
+            {
+                DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) ==
+                    DriverStation.Alliance.Red
+            },
             driveTrain
         )
     }

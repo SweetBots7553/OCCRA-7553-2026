@@ -43,9 +43,9 @@ object DriveTrain : SubsystemBase() {
         return run {
             drive(
                 ChassisSpeeds(
-                    x() * DriveTrainConstants.kRotationPerSecond,
+                    x() * DriveTrainConstants.kSpeedFactor,
                     0.0,
-                    r() * DriveTrainConstants.kSpeedFactor
+                    r() * DriveTrainConstants.kRotationPerSecond 
                 )
             )
         }

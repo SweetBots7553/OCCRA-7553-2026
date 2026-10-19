@@ -36,7 +36,12 @@ object RobotContainer {
         // arcade control
         driveTrain.defaultCommand = driveTrain.drive(
             { MathUtil.applyDeadband(driverController.rightY, threshold) },
-            { MathUtil.applyDeadband(driverController.leftX, threshold) }
+            { 
+                val strafe = MathUtil.applyDeadband(driverController.rightX, threshold)
+                val turn = MathUtil.applyDeadband(driverController.leftX, threshold)
+
+                MathUtil.clamp(strafe + turn, -1.0, 1.0)
+                }
         )
 
         coDriverController.x().whileTrue(outTakeCommand)

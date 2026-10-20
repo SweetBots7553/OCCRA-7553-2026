@@ -11,7 +11,7 @@ object Indexer : SubsystemBase() {
 
     private val indexerMotor = WPI_VictorSPX(IndexerConstants.kIndexerMotorCANID)
     
-    private val ballSensor = AnalogInput(IndexerConstants.kIndexerSensorChannel)
+    // private val ballSensor = AnalogInput(IndexerConstants.kIndexerSensorChannel)
 
     init {
         indexerMotor.configAllSettings(IndexerConstants.kIndexerConfig)
@@ -21,14 +21,18 @@ object Indexer : SubsystemBase() {
         indexerMotor.set(dutycycle)
     }
     
-    fun ballDetected(): Boolean = ballSensor.value != 0
+    // fun ballDetected(): Boolean = ballSensor.value != 0
        
     fun index(dutycycle: () -> Double): Command {
-        return startEnd({
-            index(dutycycle())
-        }, {
-            index(0.0)
-        })
+        return runOnce { 
+            index ( dutycycle() )
+        }
+    }
+    
+    fun stop(): Command {
+        return runOnce { 
+            index { 0.0 }
+        }
     }
 
     override fun periodic() {

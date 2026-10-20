@@ -23,7 +23,7 @@ object Robot : TimedRobot() {
         WebServer.start(5800, Filesystem.getDeployDirectory().canonicalPath)
         
         // enabling usb cameras
-        CameraServer.startAutomaticCapture()
+        // CameraServer.startAutomaticCapture()
         
         robotContainer = RobotContainer
     }

@@ -29,11 +29,15 @@ object Shooter : SubsystemBase() {
     }
 
     fun shoot(): Command {
-        return startEnd({
+        return runOnce { 
             shoot(ShooterConstants.kShooterSpeed)
-        }, {
+        }
+    }
+    
+    fun stop(): Command {
+        return runOnce { 
             shoot(0.0)
-        })
+        }
     }
     
     // sysid

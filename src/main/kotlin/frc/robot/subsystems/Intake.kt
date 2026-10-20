@@ -32,25 +32,22 @@ object Intake : SubsystemBase() {
         }
     }
     
-    fun extend(): Command {
-        return startRun({
-            extend(true)
-        }, {
-            extend(false)
-        })
-    }
-
     private fun intake(dutycycle: Double) {
         intakeMotor.set(dutycycle)
     }
 
     fun intake(dutycycle: () -> Double): Command {
-        return startEnd({
+        return runOnce { 
             intake(dutycycle())
-        }, {
-            intake(0.0)
-        })
+        }
     }
+    
+     fun stop(): Command {
+        return runOnce { 
+           intake(0.0)
+        }
+     }
+         
 
     override fun periodic() {
         SmartDashboard.putBoolean("Intake/Intake_Extended", solenoid.get())

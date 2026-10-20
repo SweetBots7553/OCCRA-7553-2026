@@ -22,8 +22,6 @@ object Shooter : SubsystemBase() {
 
     init {
         shooterMotor.configure(ShooterConstants.kShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
-
-        SmartDashboard.putNumber("Shooter/Shooter_Motor", shooterMotor.get())
     }
 
     private fun shoot(dutycycle: Double) {
@@ -88,5 +86,8 @@ object Shooter : SubsystemBase() {
         return sysIdDynamic(SysIdRoutine.Direction.kReverse)
     }
 
+    override fun periodic() {
+        SmartDashboard.putNumber("Shooter/Shooter_Motor", shooterMotor.get())
+    }
 
 }

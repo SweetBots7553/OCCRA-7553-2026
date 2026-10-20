@@ -91,19 +91,15 @@ class Odometry(
     // field view
     private val field = Field2d()
 
-    init {
+    override fun periodic() {
+        odometry.update(gyro.rotation2d, wheelpositions)
+        
+        field.robotPose = currentPose
+        
         SmartDashboard.putData("odometry/odometry-field", field)
 
         SmartDashboard.putNumber("odometry/pose/x", currentPose.x)
         SmartDashboard.putNumber("odometry/pose/y", currentPose.y)
         SmartDashboard.putNumber("odometry/pose/rotation", currentPose.rotation.radians)
     }
-
-    override fun periodic() {
-        odometry.update(gyro.rotation2d, wheelpositions)
-
-        field.robotPose = currentPose
-    }
-
-
 }

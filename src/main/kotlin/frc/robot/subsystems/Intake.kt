@@ -17,9 +17,6 @@ object Intake : SubsystemBase() {
 
     init {
         intakeMotor.configAllSettings(IntakeConstants.kIntakeMotorConfig)
-
-        SmartDashboard.putBoolean("Intake/Intake_Extended", solenoid.get())
-        SmartDashboard.putNumber("Intake/Intake_Motor", intakeMotor.get())
     }
 
     private fun extend(b: Boolean) {
@@ -53,5 +50,10 @@ object Intake : SubsystemBase() {
         }, {
             intake(0.0)
         })
+    }
+
+    override fun periodic() {
+        SmartDashboard.putBoolean("Intake/Intake_Extended", solenoid.get())
+        SmartDashboard.putNumber("Intake/Intake_Motor", intakeMotor.get())
     }
 }

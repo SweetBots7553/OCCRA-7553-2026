@@ -47,11 +47,22 @@ object DriveTrainConstants {
 
             return config
         }
+        
+    val kFrontLeftConfig: SparkBaseConfig
+        get() {
+            val config = SparkMaxConfig()
+            config.apply(kFrontConfig)
+        
+            
+            return config
+        } 
 
     val kBackLeftConfig: SparkMaxConfig
         get() {
             val config = SparkMaxConfig()
             config.apply(kFrontConfig)
+            
+            config.follow(kFrontLeftNeoCANID)
             
             
             return config
@@ -74,6 +85,9 @@ object DriveTrainConstants {
             config.apply(kFrontConfig)
             
             config.inverted(true)
+            
+            config.follow(kFrontRightNeoCANID)
+            
 
             return config
         }

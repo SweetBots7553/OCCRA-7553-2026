@@ -31,7 +31,7 @@ object DriveTrain : SubsystemBase() {
 
     // config
     init {
-        frontLeftNeo.configure(DriveTrainConstants.kFrontConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
+        frontLeftNeo.configure(DriveTrainConstants.kFrontLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
         frontRightNeo.configure(DriveTrainConstants.kFrontRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
         backLeftNeo.configure(DriveTrainConstants.kBackLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
         backRightNeo.configure(DriveTrainConstants.kBackRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)

@@ -37,9 +37,9 @@ object RobotContainer {
         )
         
 
-        // coDriverController.leftBumper().whileTrue(outTakeCommand).onFalse(stopOutTakeCommand)
-        // coDriverController.rightBumper().whileTrue(intakeCommand).onFalse(stopIntake)
-        // coDriverController.a().whileTrue(shootCommand).onFalse(unextend)
+        coDriverController.leftBumper().whileTrue(outTakeCommand()).onFalse(stopIntake())
+        coDriverController.rightBumper().whileTrue(intakeCommand()).onFalse(stopIntake())
+        coDriverController.a().whileTrue(shootCommand()).onFalse(stopShootCommand())
 
 
         // tmp 
@@ -55,68 +55,27 @@ object RobotContainer {
 
     // pathplanner autos
     init {
-        // NamedCommands.registerCommand("Intake", intakeCommand)
-        // NamedCommands.registerCommand("OutTake", outTakeCommand)
-        // NamedCommands.registerCommand("Shoot", shootCommand)
-        // NamedCommands.registerCommand("Extend", extend)
-        // NamedCommands.registerCommand("UnExtend", unextend)
-        
+        NamedCommands.registerCommand("Intake", intakeCommand())
+        NamedCommands.registerCommand("OutTake", outTakeCommand())
+        NamedCommands.registerCommand("Shoot", shootCommand())
+        NamedCommands.registerCommand("StopIntake", stopIntake())
+        NamedCommands.registerCommand("StopShooter", stopShootCommand())
     }
 
-    // private val intakeCommand: Command
-    //     get() {
-    //         val intakeCmd = Commands.parallel(indexer.index { -IntakeConstants.kIntakeSpeed }, intake.intake { IntakeConstants.kIntakeSpeed })
-            
-    //         val seq = Commands.sequence(extend, intakeCmd)
+    private fun intakeCommand(): Command = extend().andThen(intake.intake { IntakeConstants.kIntakeSpeed }.alongWith(indexer.index { IntakeConstants.kIntakeSpeed }))
+       
+    private fun outTakeCommand(): Command = extend().andThen(intake.intake { -IntakeConstants.kIntakeSpeed }.alongWith(indexer.index { -IntakeConstants.kIntakeSpeed }))
+   
         
-    //         return seq
-
-    //     }
+    private fun stopIntake(): Command = intake.stop().alongWith(indexer.stop()).andThen(unextend())
+    
+    private fun shootCommand(): Command = Commands.parallel(extend(), shooter.shoot(), Commands.waitSeconds(0.5).andThen(indexer.index { IntakeConstants.kIntakeSpeed }))
         
-    // private val stopIntake: Command
-    //     get() {
-    //         val end = Commands.parallel(intake.stop(), indexer.stop(), unextend)
-            
-    //         return end
-    //     }
+    private fun stopShootCommand(): Command = indexer.stop().andThen(shooter.stop()).andThen(unextend())
+    
+    private fun extend(): Command = intake.extend { true }
         
-        
-    // private val outTakeCommand: Command
-    //     get() {
-    //         val outTakeCmd = Commands.parallel(indexer.index { IntakeConstants.kIntakeSpeed }, intake.intake { -IntakeConstants.kIntakeSpeed })
-
-    //         val seq = Commands.sequence(extend, outTakeCmd)
-            
-    //         return seq
-    //     }
-        
-    // private val stopOutTakeCommand: Command 
-    //     get() {
-    //         val end = Commands.parallel(indexer.stop(), intake.stop(), unextend)
-             
-    //         return end 
-    //     }
-
-    // private val shootCommand: Command
-    //     get() {
-            
-    //         val seq = Commands.sequence()
-    //         val end = Commands.parallel()
-            
-            
-    //         return Commands.startEnd({
-                
-    //         }, {
-                
-    //         })
-        
-    //     }
-        
-    private val extend: Command
-        get() = intake.extend { true }
-        
-    private val unextend: Command 
-        get() = intake.extend { false }
+    private fun unextend(): Command  = intake.extend { false }
 
     // auto
 

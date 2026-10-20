@@ -15,6 +15,7 @@ object Indexer : SubsystemBase() {
 
     init {
         indexerMotor.configAllSettings(IndexerConstants.kIndexerConfig)
+        indexerMotor.inverted = true
     }
 
     private fun index(dutycycle: Double) {

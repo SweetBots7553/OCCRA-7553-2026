@@ -67,11 +67,11 @@ object RobotContainer {
     private fun outTakeCommand(): Command = extend().andThen(intake.intake { -IntakeConstants.kIntakeSpeed }.alongWith(indexer.index { -IntakeConstants.kIntakeSpeed }))
    
         
-    private fun stopIntake(): Command = intake.stop().alongWith(indexer.stop()).andThen(unextend())
+    private fun stopIntake(): Command = Commands.sequence(indexer.index {0.0}, intake.stop(), unextend())
     
     private fun shootCommand(): Command = Commands.parallel(extend(), shooter.shoot(), Commands.waitSeconds(0.5).andThen(indexer.index { IntakeConstants.kIntakeSpeed }))
         
-    private fun stopShootCommand(): Command = indexer.stop().andThen(shooter.stop()).andThen(unextend())
+    private fun stopShootCommand(): Command = indexer.index { 0.0 }.andThen(shooter.stop()).andThen(unextend())
     
     private fun extend(): Command = intake.extend { true }
         

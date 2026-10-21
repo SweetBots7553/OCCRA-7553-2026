@@ -4,7 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPXConfiguration
 
 object IntakeConstants {
     // dutycycle
-    const val kIntakeSpeed = 0.6
+    const val kIntakeSpeed = 0.75
     const val kIntakeMotorCANID = 31
 
     val kIntakeMotorConfig: VictorSPXConfiguration

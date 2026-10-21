@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine
+import frc.robot.constants.IntakeConstants
 import frc.robot.constants.ShooterConstants
 
 object Shooter : SubsystemBase() {
@@ -38,6 +39,13 @@ object Shooter : SubsystemBase() {
         return runOnce { 
             shoot(0.0)
         }
+    }
+    
+    fun outShoot(): Command {
+        return runOnce { 
+            shoot(-IntakeConstants.kIntakeSpeed)
+        }
+        
     }
     
     // sysid

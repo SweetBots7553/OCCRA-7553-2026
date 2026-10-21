@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
+import frc.robot.constants.IndexerConstants
 import frc.robot.constants.IntakeConstants
 import frc.robot.constants.OperatorConstats
 import frc.robot.subsystems.drive.DriveTrain
@@ -62,14 +63,14 @@ object RobotContainer {
         NamedCommands.registerCommand("StopShooter", stopShootCommand())
     }
 
-    private fun intakeCommand(): Command = extend().andThen(intake.intake { IntakeConstants.kIntakeSpeed }.alongWith(indexer.index { IntakeConstants.kIntakeSpeed }))
+    private fun intakeCommand(): Command = extend().andThen(intake.intake { IntakeConstants.kIntakeSpeed }.alongWith(indexer.index { IndexerConstants.kIndexerSpeed  }))
        
-    private fun outTakeCommand(): Command = extend().andThen(intake.intake { -IntakeConstants.kIntakeSpeed }.alongWith(indexer.index { -IntakeConstants.kIntakeSpeed }))
+    private fun outTakeCommand(): Command = extend().andThen(intake.intake { -IntakeConstants.kIntakeSpeed }.alongWith(indexer.index { -IndexerConstants.kIndexerSpeed  })).alongWith(shooter.outShoot())
    
         
-    private fun stopIntake(): Command = Commands.sequence(indexer.index {0.0}, intake.stop(), unextend())
+    private fun stopIntake(): Command = Commands.sequence(indexer.index {0.0}, intake.stop(), unextend(), shooter.stop())
     
-    private fun shootCommand(): Command = Commands.parallel(extend(), shooter.shoot(), Commands.waitSeconds(0.5).andThen(indexer.index { IntakeConstants.kIntakeSpeed }))
+    private fun shootCommand(): Command = Commands.parallel(extend(), shooter.shoot(), Commands.waitSeconds(0.5).andThen(indexer.index { IndexerConstants.kIndexerSpeed }))
         
     private fun stopShootCommand(): Command = indexer.index { 0.0 }.andThen(shooter.stop()).andThen(unextend())
     

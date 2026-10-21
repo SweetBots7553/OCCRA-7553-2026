@@ -20,10 +20,10 @@ object Main {
     @JvmStatic
     fun main(args: Array<String>) {
         
-        // val imgs = Filesystem.getDeployDirectory().resolve("imgs")
+        val imgs = Filesystem.getDeployDirectory().resolve("imgs")
         
-        // if (!imgs.resolve("coconut.jpg").exists()) 
-        //     return 
+        if (!imgs.resolve("coconut.jpg").exists()) 
+            return 
 
         
         RobotBase.startRobot {

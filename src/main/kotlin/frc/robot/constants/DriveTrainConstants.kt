@@ -34,8 +34,12 @@ object DriveTrainConstants {
             config.smartCurrentLimit(55)
 
             config.closedLoop
-                .pid(0.5, 0.0, 0.05)
+                .pid(0.3, 0.0, 0.005)
                 .maxOutput(1.0)
+                .Kv(1)
+                .Ka(1)
+                
+                
 
             val positionFactor = PI * kWheelDiameter.`in`(Units.Meters) / kGearRatio
 

@@ -12,6 +12,8 @@ class Auto(vararg options: String) {
     private val autoChooser = SendableChooser<String>()
     
     init {
+        
+        
         autoChooser.setDefaultOption("None", "None")
         
         options.forEach { o ->

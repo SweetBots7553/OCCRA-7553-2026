@@ -1,5 +1,6 @@
 package frc.robot.constants
 
+import com.revrobotics.spark.config.FeedForwardConfig
 import com.revrobotics.spark.config.SparkBaseConfig
 import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.units.Units
@@ -34,10 +35,11 @@ object DriveTrainConstants {
             config.smartCurrentLimit(55)
 
             config.closedLoop
-                .pid(0.3, 0.0, 0.005)
+                .pid(0.25, 0.0, 0.0)
                 .maxOutput(1.0)
-                .Kv(1)
-                .Ka(1)
+            
+                config.closedLoop
+                    .feedForward.kA(1.0).kV(1.0)
                 
                 
 
@@ -57,7 +59,7 @@ object DriveTrainConstants {
             val config = SparkMaxConfig()
             config.apply(kFrontConfig)
         
-             config.inverted(true)
+             
             
             
             return config
@@ -68,7 +70,7 @@ object DriveTrainConstants {
             val config = SparkMaxConfig()
             config.apply(kFrontConfig)
             
-            config.inverted(true)
+            
             
             config.follow(kFrontLeftNeoCANID)
             
@@ -81,7 +83,7 @@ object DriveTrainConstants {
             val config = SparkMaxConfig()
             config.apply(kFrontConfig)
             
-            
+            config.inverted(true)
             
             return config
         }
@@ -92,7 +94,7 @@ object DriveTrainConstants {
             val config = SparkMaxConfig()
             config.apply(kFrontConfig)
             
-    
+            config.inverted(true)
     
             config.follow(kFrontRightNeoCANID)
             

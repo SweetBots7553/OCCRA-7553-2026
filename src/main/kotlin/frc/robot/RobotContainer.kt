@@ -2,6 +2,7 @@ package frc.robot
 
 import com.pathplanner.lib.auto.NamedCommands
 import edu.wpi.first.math.MathUtil
+import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.Commands
@@ -13,6 +14,7 @@ import frc.robot.subsystems.drive.DriveTrain
 import frc.robot.subsystems.Indexer
 import frc.robot.subsystems.Intake
 import frc.robot.subsystems.Shooter
+import frc.robot.subsystems.drive.Odometry
 import frc.robot.subsystems.drive.genAutoEntries
 
 object RobotContainer {
@@ -22,6 +24,7 @@ object RobotContainer {
 
     // subsystems
     private val driveTrain = DriveTrain
+    private val odometry = Odometry(driveTrain)
     private val intake = Intake
     private val shooter = Shooter
     private val indexer = Indexer
@@ -33,8 +36,8 @@ object RobotContainer {
         
         // arcade control
         driveTrain.defaultCommand = driveTrain.drive(
-            { MathUtil.applyDeadband(driverController.leftY, threshold) },
-            { MathUtil.applyDeadband(driverController.rightX, threshold) }
+            { -MathUtil.applyDeadband(driverController.leftY, threshold) },
+            { -MathUtil.applyDeadband(driverController.rightX, threshold) }
         )
         
 
@@ -83,5 +86,5 @@ object RobotContainer {
     val auto = genAutoEntries()
     
     val autonomousCommand: Command
-        get() = auto.auto
+        get() = Commands.sequence(driveTrain.drive({-0.3}, {0.0}), Commands.waitSeconds(1.2).andThen(driveTrain.drive({0.0}, {0.0}), shootCommand(), Commands.waitSeconds(0.8), stopShootCommand()))
 }

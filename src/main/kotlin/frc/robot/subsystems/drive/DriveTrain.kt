@@ -20,14 +20,12 @@ import kotlin.math.abs
 
 object DriveTrain : SubsystemBase() {
 
-    private val kinematics = DifferentialDriveKinematics(DriveTrainConstants.kTrackWidth)
+    val kinematics = DifferentialDriveKinematics(DriveTrainConstants.kTrackWidth)
 
-    private val frontLeftNeo = SparkMax(DriveTrainConstants.kFrontLeftNeoCANID, MotorType.kBrushless)
-    private val frontRightNeo = SparkMax(DriveTrainConstants.kFrontRightNeoCANID, MotorType.kBrushless)
+    val frontLeftNeo = SparkMax(DriveTrainConstants.kFrontLeftNeoCANID, MotorType.kBrushless)
+    val frontRightNeo = SparkMax(DriveTrainConstants.kFrontRightNeoCANID, MotorType.kBrushless)
     private val backLeftNeo = SparkMax(DriveTrainConstants.kBackLeftNeoCANID, MotorType.kBrushless)
     private val backRightNeo = SparkMax(DriveTrainConstants.kBackRightNeoCANID, MotorType.kBrushless)
-
-    private val odometry = Odometry(this, frontLeftNeo, frontRightNeo, kinematics)
 
     // config
     init {
@@ -40,7 +38,7 @@ object DriveTrain : SubsystemBase() {
     }
 
     fun drive(x: () -> Double, r: () -> Double): Command {
-        return run {
+        return runOnce {
             drive(
                 ChassisSpeeds(
                     x() * DriveTrainConstants.kSpeedFactor,
@@ -65,8 +63,10 @@ object DriveTrain : SubsystemBase() {
     }
     
 
-    fun stop() {
-        drive(ChassisSpeeds())
+    fun stop(): Command {
+        return runOnce { 
+            drive(ChassisSpeeds())
+        }
     }
 
     private val routine: SysIdRoutine

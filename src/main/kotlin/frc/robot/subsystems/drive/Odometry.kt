@@ -18,16 +18,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.constants.OdometryConstants
 
-class Odometry(
-    driveTrain: DriveTrain,
-    frontLeftNeo: SparkMax,
-    frontRightNeo: SparkMax,
-    private val kinematics: DifferentialDriveKinematics
+class Odometry(private val driveTrain: DriveTrain) : SubsystemBase() {
 
-) : SubsystemBase() {
-
-    private val frontLeftEncoder = frontLeftNeo.encoder
-    private val frontRightEncoder = frontRightNeo.encoder
+    private val frontLeftEncoder = driveTrain.frontLeftNeo.encoder
+    private val frontRightEncoder = driveTrain.frontRightNeo.encoder
     private val gyro = ADXRS450_Gyro()
 
     private val resetPose = Pose2d()
@@ -57,7 +51,7 @@ class Odometry(
 
     private val chassisSpeeds: ChassisSpeeds
         get() {
-            return kinematics.toChassisSpeeds(wheelvelocitys)
+            return driveTrain.kinematics.toChassisSpeeds(wheelvelocitys)
         }
 
     fun resetOdometry() {
@@ -74,13 +68,15 @@ class Odometry(
             { resetPose },
             { chassisSpeeds },
             { speeds: ChassisSpeeds, _: DriveFeedforwards ->
+
+           
+
                 driveTrain.drive(speeds)
             },
             OdometryConstants.kPathController,
             config,
             {
-                DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) ==
-                    DriverStation.Alliance.Red
+                false
             },
             driveTrain
         )

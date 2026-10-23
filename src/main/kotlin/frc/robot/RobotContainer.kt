@@ -86,5 +86,5 @@ object RobotContainer {
     val auto = genAutoEntries()
     
     val autonomousCommand: Command
-        get() = Commands.sequence(driveTrain.drive({-0.3}, {0.0}), Commands.waitSeconds(1.2).andThen(driveTrain.drive({0.0}, {0.0}), shootCommand(), Commands.waitSeconds(0.8), stopShootCommand()))
+        get() = Commands.sequence(driveTrain.drive({-0.3}, {0.0}), Commands.waitSeconds(1.4).andThen(driveTrain.drive({0.0}, {0.0}), shootCommand(), Commands.waitSeconds(0.8), stopShootCommand()))
 }

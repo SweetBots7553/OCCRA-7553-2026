@@ -40,10 +40,17 @@ object RobotContainer {
             { -MathUtil.applyDeadband(driverController.rightX, threshold) }
         )
         
+        driverController.x().toggleOnTrue(extend())
+        driverController.x().toggleOnFalse(unextend())
+        
+        driverController.leftBumper().whileTrue(intakeCommand()).onFalse(stopIntake())
+        driverController.rightBumper().whileTrue(outTakeCommand()).onFalse(stopIntake())
+        driverController.rightTrigger().whileTrue(shootCommand()).onFalse(stopShootCommand())
+        
 
-        coDriverController.leftBumper().whileTrue(outTakeCommand()).onFalse(stopIntake())
-        coDriverController.rightBumper().whileTrue(intakeCommand()).onFalse(stopIntake())
-        coDriverController.a().whileTrue(shootCommand()).onFalse(stopShootCommand())
+        // coDriverController.leftBumper().whileTrue(outTakeCommand()).onFalse(stopIntake())
+        // coDriverController.rightBumper().whileTrue(intakeCommand()).onFalse(stopIntake())
+        // coDriverController.a().whileTrue(shootCommand()).onFalse(stopShootCommand())
 
 
         // tmp 
@@ -71,11 +78,11 @@ object RobotContainer {
     private fun outTakeCommand(): Command = extend().andThen(intake.intake { -IntakeConstants.kIntakeSpeed }.alongWith(indexer.index { -IndexerConstants.kIndexerSpeed  })).alongWith(shooter.outShoot())
    
         
-    private fun stopIntake(): Command = Commands.sequence(indexer.index {0.0}, intake.stop(), unextend(), shooter.stop())
+    private fun stopIntake(): Command = Commands.sequence(indexer.index {0.0}, intake.stop(), shooter.stop())
     
     private fun shootCommand(): Command = Commands.parallel(extend(), shooter.shoot(), Commands.waitSeconds(0.5).andThen(indexer.index { IndexerConstants.kIndexerSpeed }))
         
-    private fun stopShootCommand(): Command = indexer.index { 0.0 }.andThen(shooter.stop()).andThen(unextend())
+    private fun stopShootCommand(): Command = indexer.index { 0.0 }.andThen(shooter.stop())
     
     private fun extend(): Command = intake.extend { true }
         

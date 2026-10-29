@@ -18,6 +18,11 @@ object Intake : SubsystemBase() {
     init {
         intakeMotor.configAllSettings(IntakeConstants.kIntakeMotorConfig)
     }
+    
+    val isExtended: Boolean 
+    get() {
+        return solenoid.get()
+    }
 
     private fun extend(b: Boolean) {
         if (b == solenoid.get())

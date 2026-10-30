@@ -17,4 +17,7 @@ object IntakeConstants {
 
     const val kPneumaticChannel = 0
     const val kPneumaticHubCANID = 0
+    
+    const val kIntakeAnalogSensorChannel = 0
+    
 }

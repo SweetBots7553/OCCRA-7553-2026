@@ -31,9 +31,7 @@ object Indexer : SubsystemBase() {
     }
     
     fun stop(): Command {
-        return runOnce { 
-            index { 0.0 }
-        }
+        return index { 0.0 }
     }
 
     override fun periodic() {

@@ -42,11 +42,11 @@ object RobotContainer {
         
     
         
-        driverController.a().toggleOnTrue(extendControl())
+        // driverController.a().toggleOnTrue(extendControl())
         
-        driverController.leftTrigger().whileTrue(intakeCommand()).onFalse(stopIntake())
-        driverController.rightBumper().whileTrue(outTakeCommand()).onFalse(stopIntake())
-        driverController.rightTrigger().whileTrue(shootCommand()).onFalse(stopShootCommand())
+        // driverController.leftTrigger().whileTrue(intakeCommand()).onFalse(stopIntake())
+        // driverController.rightBumper().whileTrue(outTakeCommand()).onFalse(stopIntake())
+        // driverController.rightTrigger().whileTrue(shootCommand()).onFalse(stopShootCommand())
         
 
         // coDriverController.leftBumper().whileTrue(outTakeCommand()).onFalse(stopIntake())
@@ -63,40 +63,7 @@ object RobotContainer {
         
         // driverController.a().whileTrue(shooter.forwardsysIdQuasistatic())
     }
-    // commands
-
-    // pathplanner autos
-    init {
-        NamedCommands.registerCommand("Intake", intakeCommand())
-        NamedCommands.registerCommand("OutTake", outTakeCommand())
-        NamedCommands.registerCommand("Shoot", shootCommand())
-        NamedCommands.registerCommand("StopIntake", stopIntake())
-        NamedCommands.registerCommand("StopShooter", stopShootCommand())
-    }
-
-    private fun intakeCommand(): Command = extend().andThen(intake.intake { IntakeConstants.kIntakeSpeed }.alongWith(indexer.index { IndexerConstants.kIndexerSpeed  }))
-       
-    private fun outTakeCommand(): Command = extend().andThen(intake.intake { -IntakeConstants.kIntakeSpeed }.alongWith(indexer.index { -IndexerConstants.kIndexerSpeed  })).alongWith(shooter.outShoot())
    
-        
-    private fun stopIntake(): Command = Commands.sequence(indexer.index {0.0}, intake.stop(), shooter.stop())
-    
-    private fun shootCommand(): Command = Commands.parallel(extend(), shooter.shoot(), Commands.waitSeconds(0.5).andThen(indexer.index { IndexerConstants.kIndexerSpeed }))
-        
-    private fun primeCommand(): Command = Commands.sequence(indexer.index { -IndexerConstants.kIndexerSpeed * 0.5 }, Commands.waitSeconds(0.2), indexer.index { 0.0 }, shooter.shoot())
-    
-    private fun stopShootCommand(): Command = indexer.index { 0.0 }.andThen(shooter.stop())
-    
-    private fun extend(): Command = intake.extend { true }
-        
-    private fun unextend(): Command  = intake.extend { false }
-
-    private fun extendControl(): Command {
-        
-        return intake.extend { !intake.isExtended }
-        
-    } 
-    
     // auto
 
     val auto = genAutoEntries()

@@ -24,28 +24,21 @@ object Shooter : SubsystemBase() {
     init {
         shooterMotor.configure(ShooterConstants.kShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
     }
-
+    
+    fun shooterPrimed(): Boolean = shooterMotor.get() <= shooterMotor.closedLoopController.setpoint - ShooterConstants.kSetpointThreshold
+        
     private fun shoot(dutycycle: Double) {
         shooterMotor.closedLoopController.setSetpoint(dutycycle, SparkBase.ControlType.kDutyCycle)
     }
 
-    fun shoot(): Command {
+    fun shoot(dutycycle: () -> Double): Command {
         return runOnce { 
-            shoot(ShooterConstants.kShooterSpeed)
+            shoot(dutycycle())
         }
     }
     
     fun stop(): Command {
-        return runOnce { 
-            shoot(0.0)
-        }
-    }
-    
-    fun outShoot(): Command {
-        return runOnce { 
-            shoot(-IntakeConstants.kIntakeSpeed)
-        }
-        
+        return shoot { 0.0 }
     }
     
     // sysid

@@ -12,6 +12,7 @@ object ShooterConstants  {
 
     // m/s 
     const val kShooterSpeed = 0.5
+    const val kSetpointThreshold = 0.1
     private val kShooterWheelDiameter = Units.Millimeters.of(90.0)
 
     // likely to be a sparkmax, but idk 

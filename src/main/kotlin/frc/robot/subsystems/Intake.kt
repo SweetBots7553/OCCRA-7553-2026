@@ -14,17 +14,18 @@ import kotlin.math.abs
 
 
 object Intake : SubsystemBase() {
-    private val solenoid = Solenoid(IntakeConstants.kPneumaticHubCANID, PneumaticsModuleType.CTREPCM, IntakeConstants.kPneumaticChannel)
+    private val solenoid =
+        Solenoid(IntakeConstants.kPneumaticHubCANID, PneumaticsModuleType.CTREPCM, IntakeConstants.kPneumaticChannel)
     private val intakeMotor = WPI_VictorSPX(IntakeConstants.kIntakeMotorCANID)
 
     init {
         intakeMotor.configAllSettings(IntakeConstants.kIntakeMotorConfig)
     }
-    
-    val isExtended: Boolean 
-    get() {
-        return solenoid.get()
-    }
+
+    val isExtended: Boolean
+        get() {
+            return solenoid.get()
+        }
 
     private fun extend(b: Boolean) {
         if (b == solenoid.get())
@@ -38,38 +39,48 @@ object Intake : SubsystemBase() {
             extend(b())
         }
     }
-    
+
     private fun intake(dutycycle: Double) {
         intakeMotor.set(dutycycle)
     }
 
     fun intake(dutycycle: () -> Double): Command {
-        return runOnce { 
+        return runOnce {
             intake(dutycycle())
         }
     }
-    
+
     fun stop(): Command {
         return intake { 0.0 }
     }
-     
+
     private val ballSensor: AnalogInput = AnalogInput(IntakeConstants.kIntakeAnalogSensorChannel)
-     
+
     val isBallDetected: Boolean
-    get() {
-        return abs(ballSensor.value) != 0
-    }
-    
+        get() {
+            return abs(ballSensor.value) != 0
+        }
+
     val countedBalls: Int
-    get() {
-        return currentCount
-    }
-    
+        get() {
+            return currentCount
+        }
+
     private var isBallDetectedPast: Boolean = false
     private var currentCount: Int = 0
-    
-    fun clearCount() {
-        currentCount = 0
+
+    private var isBallSensorDisabled: Boolean = false
+
+    fun clearCount(): Command {
+        return runOnce {
+            currentCount = 0
+        }
+    }
+
+    fun disableSensor(disabled: Boolean): Command {
+        return runOnce {
+            isBallSensorDisabled = disabled
+        }
     }
 
     override fun periodic() {
@@ -77,14 +88,13 @@ object Intake : SubsystemBase() {
         SmartDashboard.putNumber("Intake/Intake_Motor", intakeMotor.get())
         SmartDashboard.putBoolean("Intake/Ball_is_Detected", isBallDetected)
 
-        if (isBallDetected && !isBallDetectedPast) 
+        if (isBallDetected && !isBallDetectedPast && !isBallSensorDisabled)
             currentCount++
 
         SmartDashboard.putNumber("Intake/Current", countedBalls.toDouble())
-        
+
         isBallDetectedPast = isBallDetected
-                
     }
-        
-        
+
+
 }

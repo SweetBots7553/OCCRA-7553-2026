@@ -11,79 +11,71 @@ import frc.robot.subsystems.Indexer
 import frc.robot.subsystems.Intake
 import frc.robot.subsystems.Shooter
 
-class RobotCommands(private val intake: Intake, private val shooter: Shooter,  private val indexer: Indexer) : SubsystemBase() {
-    
-    init {
-        
-    }
+class RobotCommands(
+    private val intake: Intake,
+    private val shooter: Shooter,
+    private val indexer: Indexer
+) :
+    SubsystemBase() {
 
-    private val extend: Command 
-    get() {
-        return intake.extend { true }
-    }
-    
+    private val extend: Command
+        get() {
+            return intake.extend { true }
+        }
+
     private val unextend: Command
-    get() {
-        return intake.extend { false }
-    }
-    
+        get() {
+            return intake.extend { false }
+        }
+
     private val primeShooter: Command
-    get(){
-        val indexBackup = indexer.index { -IndexerConstants.kIndexerSpeed }.andThen( Commands.waitSeconds(0.1)).andThen(indexer.stop())
-        val shooterPrime = shooter.shoot { ShooterConstants.kShooterSpeed }
-        
-        return indexBackup.andThen(shooterPrime).onlyIf { shooter.isShooterPrimed() }
-    }
-           
+        get() {
+
+            val disableSensor = intake.disableSensor(true)
+
+            val backup =
+                indexer.index { -IndexerConstants.kIndexerSpeed }
+                    .andThen(Commands.waitSeconds(0.2))
+                    .andThen(indexer.stop())
+
+            val runShooter = shooter.shoot { ShooterConstants.kShooterSpeed }
+
+            return Commands.sequence(disableSensor, backup, runShooter)
+        }
+
     val shootCommand: Command
-    get() {
-        return primeShooter.andThen(indexer.index { IndexerConstants.kIndexerSpeed })
-    }
-    
+        get() {
+            return primeShooter
+                .andThen(indexer.index { IndexerConstants.kIndexerSpeed }
+                    .onlyIf { shooter.isShooterPrimed() })
+        }
+
     private val stopShootCommand: Command
-    get() {
-        return indexer
-            .stop()
-            .andThen(shooter.stop())
-    }
-    
+        get() {
+            return indexer
+                .stop()
+                .andThen(shooter.stop())
+        }
+
 
     val intakeCommand: Command
-    get() {
-        val i = extend
-            .andThen(intake.intake { IntakeConstants.kIntakeSpeed }
-            .alongWith(indexer.index { IndexerConstants.kIndexerSpeed  }))
-            
-        return i
-    }
-    
-    private val stopIntake: Command = Commands.sequence(
-        indexer.stop(), 
-            intake.stop(), 
-            shooter.stop(), 
-            unextend
-        )
-        
-    
-    
-    
-    
-    
-    //  init {
-    //     NamedCommands.registerCommand("Intake", intakeCommand())
-    //     NamedCommands.registerCommand("OutTake", outTakeCommand())
-    //     NamedCommands.registerCommand("Shoot", shootCommand())
-    //     NamedCommands.registerCommand("StopIntake", stopIntake())
-    //     NamedCommands.registerCommand("StopShooter", stopShootCommand())
-    // }
+        get() {
+            val enableSensor = intake.disableSensor(false)
 
-    
-       
-    // private fun outTakeCommand(): Command = extend().andThen(intake.intake { -IntakeConstants.kIntakeSpeed }.alongWith(indexer.index { -IndexerConstants.kIndexerSpeed  })).alongWith(shooter.outShoot())
-   
-    // private fun shootCommand(): Command = Commands.parallel(extend(), shooter.shoot(), Commands.waitSeconds(0.5).andThen(indexer.index { IndexerConstants.kIndexerSpeed }))
-        
-    // private fun primeCommand(): Command = Commands.sequence(indexer.index { -IndexerConstants.kIndexerSpeed * 0.5 }, Commands.waitSeconds(0.2), indexer.index { 0.0 }, shooter.shoot())
-    
-    // private fun stopShootCommand(): Command = indexer.index { 0.0 }.andThen(shooter.stop())
+            val intakeStart = extend
+                .andThen(intake.intake { IntakeConstants.kIntakeSpeed }
+                    .alongWith(indexer.index { IndexerConstants.kIndexerSpeed }))
+
+            val stop = stopIntake.onlyIf { intake.countedBalls <= 2 }
+
+            return Commands.sequence(enableSensor, intakeStart, stop)
+        }
+
+
+    private val stopIntake: Command = Commands.sequence(
+        indexer.stop(),
+        intake.stop(),
+        shooter.stop(),
+        unextend
+    )
 }

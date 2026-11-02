@@ -5,12 +5,16 @@ import com.revrobotics.ResetMode
 import com.revrobotics.spark.SparkBase
 import com.revrobotics.spark.SparkFlex
 import com.revrobotics.spark.SparkLowLevel
+import com.revrobotics.spark.SparkMax
+import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.units.Units
 import edu.wpi.first.units.measure.Voltage
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine
+import frc.robot.constants.IntakeConstants
 import frc.robot.constants.ShooterConstants
 
 object Shooter : SubsystemBase() {
@@ -18,30 +22,25 @@ object Shooter : SubsystemBase() {
     private val shooterMotor = SparkFlex(ShooterConstants.kShooterMotorCANID, SparkLowLevel.MotorType.kBrushless)
 
     init {
-        shooterMotor.configure(
-            ShooterConstants.kShooterConfig,
-            ResetMode.kResetSafeParameters,
-            PersistMode.kPersistParameters
-        )
+        shooterMotor.configure(ShooterConstants.kShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
     }
-
-    fun isShooterPrimed(): Boolean =
-        shooterMotor.get() <= shooterMotor.closedLoopController.setpoint - ShooterConstants.kSetpointThreshold
-
+    
+    val isShooterPrimed: Boolean = shooterMotor.encoder.velocity >= (shooterMotor.closedLoopController.setpoint - ShooterConstants.kSetpointThreshold)
+        
     private fun shoot(dutycycle: Double) {
         shooterMotor.closedLoopController.setSetpoint(dutycycle, SparkBase.ControlType.kDutyCycle)
     }
 
     fun shoot(dutycycle: () -> Double): Command {
-        return runOnce {
+        return runOnce { 
             shoot(dutycycle())
         }
     }
-
+    
     fun stop(): Command {
         return shoot { 0.0 }
     }
-
+    
     // sysid
 
     private val routine: SysIdRoutine
@@ -93,7 +92,10 @@ object Shooter : SubsystemBase() {
     }
 
     override fun periodic() {
+        val primed = isShooterPrimed
+        
         SmartDashboard.putNumber("Shooter/Shooter_Motor", shooterMotor.get())
+        SmartDashboard.putBoolean("Shooter/Shooter_Primed", primed)
     }
 
 }

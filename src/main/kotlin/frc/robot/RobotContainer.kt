@@ -28,10 +28,11 @@ object RobotContainer {
     private val intake = Intake
     private val shooter = Shooter
     private val indexer = Indexer
+    
+    private val robotCommands: RobotCommands = RobotCommands(intake, shooter, indexer)
 
     // controls
     init {
-        
         val threshold = OperatorConstats.kDeadbandThreshold
         
         // arcade control
@@ -40,7 +41,10 @@ object RobotContainer {
             { -MathUtil.applyDeadband(driverController.rightX, threshold) }
         )
         
-    
+        
+        driverController.a().whileTrue(robotCommands.intakeCommand).onFalse(robotCommands.stopIntake)
+        driverController.b().whileTrue(robotCommands.shootCommand).onFalse(robotCommands.stopShootCommand)
+        
         
         // driverController.a().toggleOnTrue(extendControl())
         

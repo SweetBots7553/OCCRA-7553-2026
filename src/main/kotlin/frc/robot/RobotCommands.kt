@@ -30,31 +30,30 @@ class RobotCommands(
 
     private val primeShooter: Command
         get() {
-
             val disableSensor = intake.disableSensor(true)
 
             val backup =
                 indexer.index { -IndexerConstants.kIndexerSpeed }
-                    .andThen(Commands.waitSeconds(0.2))
+                    .andThen(Commands.waitSeconds(0.6))
                     .andThen(indexer.stop())
 
             val runShooter = shooter.shoot { ShooterConstants.kShooterSpeed }
 
-            return Commands.sequence(disableSensor, backup, runShooter)
+            return disableSensor.andThen(backup.andThen(runShooter))
         }
 
     val shootCommand: Command
         get() {
-            return primeShooter
-                .andThen(indexer.index { IndexerConstants.kIndexerSpeed }
-                    .onlyIf { shooter.isShooterPrimed() })
+            val shoot = indexer.index { IndexerConstants.kIndexerSpeed }
+            
+            return extend.andThen(primeShooter.andThen(Commands.waitUntil { shooter.isShooterPrimed }.andThen(shoot).andThen(intake.clearCount())))
         }
 
-    private val stopShootCommand: Command
+    val stopShootCommand: Command
         get() {
             return indexer
                 .stop()
-                .andThen(shooter.stop())
+                .andThen(shooter.stop()).andThen(unextend)
         }
 
 
@@ -66,16 +65,14 @@ class RobotCommands(
                 .andThen(intake.intake { IntakeConstants.kIntakeSpeed }
                     .alongWith(indexer.index { IndexerConstants.kIndexerSpeed }))
 
-            val stop = stopIntake.onlyIf { intake.countedBalls <= 2 }
+    
 
-            return Commands.sequence(enableSensor, intakeStart, stop)
+            return enableSensor.andThen(intakeStart)
         }
 
 
-    private val stopIntake: Command = Commands.sequence(
-        indexer.stop(),
-        intake.stop(),
-        shooter.stop(),
-        unextend
-    )
+    val stopIntake: Command
+    get() {
+        return Commands.waitUntil { intake.countedBalls >= 2 }.andThen(intake.stop().andThen(indexer.stop()).andThen(unextend))
+    }
 }

@@ -10,8 +10,6 @@ import frc.robot.constants.IndexerConstants
 object Indexer : SubsystemBase() {
 
     private val indexerMotor = WPI_VictorSPX(IndexerConstants.kIndexerMotorCANID)
-    
-    // private val ballSensor = AnalogInput(IndexerConstants.kIndexerSensorChannel)
 
     init {
         indexerMotor.configAllSettings(IndexerConstants.kIndexerConfig)
@@ -21,8 +19,6 @@ object Indexer : SubsystemBase() {
     private fun index(dutycycle: Double) {
         indexerMotor.set(dutycycle)
     }
-    
-    // fun ballDetected(): Boolean = ballSensor.value != 0
        
     fun index(dutycycle: () -> Double): Command {
         return runOnce { 

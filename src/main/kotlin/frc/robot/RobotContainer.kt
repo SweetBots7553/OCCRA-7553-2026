@@ -44,6 +44,7 @@ object RobotContainer {
         
         driverController.a().whileTrue(robotCommands.intakeCommand).onFalse(robotCommands.stopIntake)
         driverController.b().whileTrue(robotCommands.shootCommand).onFalse(robotCommands.stopShootCommand)
+        driverController.x().whileTrue(robotCommands.outTakeCommand).onFalse(robotCommands.stopOutTaking)
         
         
         // driverController.a().toggleOnTrue(extendControl())

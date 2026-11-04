@@ -20,5 +20,5 @@ object IntakeConstants {
     
     const val kIntakeAnalogSensorChannel = 0
     
-    const val kBallDetectionThreshold = 1.5
+    const val kBallDetectionThreshold = 1.2
 }

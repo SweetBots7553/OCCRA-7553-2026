@@ -2,6 +2,7 @@ package frc.robot.subsystems
 
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX
+import edu.wpi.first.math.MathUtil
 import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.AnalogInput
 import edu.wpi.first.wpilibj.PneumaticsModuleType
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.constants.IntakeConstants
 import kotlin.math.abs
+import kotlin.math.sign
 
 
 object Intake : SubsystemBase() {
@@ -63,7 +65,7 @@ object Intake : SubsystemBase() {
     
     val countedBalls: Int
     get() {
-        return currentCount
+        return MathUtil.clamp(currentCount, 0, 100)
     }
     
     private var isBallDetectedPast: Boolean = false
@@ -92,9 +94,13 @@ object Intake : SubsystemBase() {
 
         SmartDashboard.putNumber("Intake/Sensor_Current", ballSensor.voltage)
         
-        if (ballDetected && !isBallDetectedPast && !sensorDisabled) 
+        if (ballDetected && !isBallDetectedPast && !sensorDisabled && sign(intakeMotor.get()) == 1.0) 
             currentCount++
-
+        // else if (ballDetected && !isBallDetectedPast && !sensorDisabled && sign(intakeMotor.get()) == -1.0)  
+        //     currentCount--  
+    
+       
+        
         SmartDashboard.putNumber("Intake/Current_Ball_Count", countedBalls.toDouble())
         
         isBallDetectedPast = isBallDetected

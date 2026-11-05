@@ -84,6 +84,10 @@ object Intake : SubsystemBase() {
             currentCount = 0
         }
     }
+    
+    init {
+        currentCount = 0
+    }
 
     override fun periodic() {
         val ballDetected = isBallDetected

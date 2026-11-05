@@ -1,8 +1,11 @@
 package frc.robot
 
 import com.pathplanner.lib.auto.NamedCommands
+import edu.wpi.first.wpilibj.event.BooleanEvent
+import edu.wpi.first.wpilibj.event.EventLoop
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.constants.IndexerConstants
@@ -20,7 +23,7 @@ class RobotCommands(
     SubsystemBase() {
         
         
-    private val hasBalls: Boolean 
+     val hasBalls: Boolean 
         get() {
             return intake.countedBalls >= 2
         }    
@@ -35,7 +38,7 @@ class RobotCommands(
             return intake.extend { false }
         }
 
-    private val primeShooter: Command
+    val primeShooter: Command
         get() {
             val disableSensor = intake.disableSensor(true)
 
@@ -46,14 +49,14 @@ class RobotCommands(
 
             val runShooter = shooter.shoot { ShooterConstants.kShooterSpeed }
 
-            return Commands.sequence(extend, shooter.shoot { -ShooterConstants.kShooterSpeed }, runShooter.alongWith(backup))
+            return Commands.sequence(extend, shooter.shoot { -ShooterConstants.kShooterSpeed }, backup, runShooter)
         }
 
     val shootCommand: Command
         get() {
-            val shoot = indexer.index { IndexerConstants.kIndexerSpeed }
+            val shoot = indexer.index { IndexerConstants.kIndexerSpeed }.alongWith(shooter.shoot { ShooterConstants.kShooterSpeed })
             
-            return primeShooter.andThen(Commands.waitUntil { shooter.isShooterPrimed }.andThen(shoot).andThen(intake.clearCount()))
+            return primeShooter.andThen(Commands.waitSeconds(0.8).andThen(shoot).andThen(intake.clearCount()))
         }
 
     val stopShootCommand: Command
@@ -101,9 +104,4 @@ class RobotCommands(
     get() {
         return Commands.waitUntil { !hasBalls }.andThen(intake.stop().andThen(indexer.stop().alongWith(shooter.stop())).andThen(unextend))
     }
-    
-    override fun periodic() { 
-        // SmartDashboard.putString("CoDriver/Current_CoDriver_Commands", currentCommand.name)
-    }
-    
 }

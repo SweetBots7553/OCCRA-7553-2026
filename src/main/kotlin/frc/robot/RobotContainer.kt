@@ -3,6 +3,8 @@ package frc.robot
 import com.pathplanner.lib.auto.NamedCommands
 import edu.wpi.first.math.MathUtil
 import edu.wpi.first.math.kinematics.ChassisSpeeds
+import edu.wpi.first.wpilibj.event.BooleanEvent
+import edu.wpi.first.wpilibj.event.EventLoop
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.Commands
@@ -29,8 +31,21 @@ object RobotContainer {
     private val shooter = Shooter
     private val indexer = Indexer
     
-    private val robotCommands: RobotCommands = RobotCommands(intake, shooter, indexer)
+   
 
+    // private val eventLoop: EventLoop = EventLoop()
+    
+     private val robotCommands: RobotCommands = RobotCommands(intake, shooter, indexer)
+    
+    // private val hasBallEvent: BooleanEvent = BooleanEvent(eventLoop) {
+    //     robotCommands.hasBalls
+    // }
+    
+    // private val notHasBallEvent: BooleanEvent = BooleanEvent(eventLoop) {
+    //     !robotCommands.hasBalls
+    // }
+    
+    
     // controls
     init {
         val threshold = OperatorConstats.kDeadbandThreshold
@@ -41,41 +56,17 @@ object RobotContainer {
             { -MathUtil.applyDeadband(driverController.rightX, threshold) }
         )
         
-        
-        driverController.a().whileTrue(robotCommands.intakeCommand).onFalse(robotCommands.stopIntake)
-        driverController.b().whileTrue(robotCommands.shootCommand).onFalse(robotCommands.stopShootCommand)
-        driverController.x().whileTrue(robotCommands.outTakeCommand).onFalse(robotCommands.stopOutTaking)
-        
-        
-        // driverController.a().toggleOnTrue(extendControl())
-        
-        // driverController.leftTrigger().whileTrue(intakeCommand()).onFalse(stopIntake())
-        // driverController.rightBumper().whileTrue(outTakeCommand()).onFalse(stopIntake())
-        // driverController.rightTrigger().whileTrue(shootCommand()).onFalse(stopShootCommand())
-        
-
-        // coDriverController.leftBumper().whileTrue(outTakeCommand()).onFalse(stopIntake())
-        // coDriverController.rightBumper().whileTrue(intakeCommand()).onFalse(stopIntake())
-        // coDriverController.a().whileTrue(shootCommand()).onFalse(stopShootCommand())
-
-
-        // tmp 
-        // driverController.x().whileTrue(driveTrain.forwardsysIdQuasistatic())
-        // driverController.y().whileFalse(driveTrain.reversesysIdQuasistatic())
-
-        // driverController.a().whileTrue(driveTrain.forwardsysIdDynamic())
-        // driverController.b().whileTrue(driveTrain.reversesysIdDynamic())
-        
-        // driverController.a().whileTrue(shooter.forwardsysIdQuasistatic())
+        coDriverController.b().whileTrue(robotCommands.intakeCommand).onFalse(robotCommands.stopIntake)
+        coDriverController.leftBumper().whileTrue(robotCommands.outTakeCommand).onFalse(robotCommands.stopOutTaking)
+        coDriverController.a().whileTrue(robotCommands.shootCommand).onFalse(robotCommands.stopShootCommand)
     }
-   
+
+    
     // auto
 
     val auto = genAutoEntries()
     
-    val autonomousCommand: Command
-        get() = Commands.none()
     
-    // val autonomousCommand: Command
-    //     get() = Commands.sequence(driveTrain.drive({-0.3}, {0.0}), Commands.waitSeconds(1.4).andThen(driveTrain.drive({0.0}, {0.0}), shootCommand(), Commands.waitSeconds(0.8), stopShootCommand()))
+    val autonomousCommand: Command
+        get() = Commands.sequence(driveTrain.drive({-0.3}, {0.0}), Commands.waitSeconds(1.4).andThen(driveTrain.drive({0.0}, {0.0}), robotCommands.shootCommand, Commands.waitSeconds(2.0), robotCommands.stopShootCommand))
 }

@@ -6,5 +6,5 @@ object OperatorConstats {
     const val kDriverPort = 0
     const val kCoDriverPort = 1
 
-    const val kDeadbandThreshold = 0.40
+    const val kDeadbandThreshold = 0.20
 }

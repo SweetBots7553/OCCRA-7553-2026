@@ -11,7 +11,7 @@ object DriveTrainConstants {
     // TODO: need to get rev logs from Advantage scope, and use sysid to get the feedforwards, also fix gear ratio, and diameter. 
 
     // m/s
-    const val kSpeedFactor = 5.0
+    const val kSpeedFactor = 3.0
     const val kRotationPerSecond = 8.0 
 
     // this is the distance so It can calculate rotation. 

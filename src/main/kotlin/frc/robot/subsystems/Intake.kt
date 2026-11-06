@@ -3,7 +3,6 @@ package frc.robot.subsystems
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX
 import edu.wpi.first.math.MathUtil
-import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.AnalogInput
 import edu.wpi.first.wpilibj.PneumaticsModuleType
 import edu.wpi.first.wpilibj.Solenoid
@@ -11,7 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.constants.IntakeConstants
-import kotlin.math.abs
 import kotlin.math.sign
 
 
@@ -45,16 +43,19 @@ object Intake : SubsystemBase() {
         intakeMotor.set(dutycycle)
     }
 
-    fun intake(dutycycle: () -> Double): Command {
+    private fun intake(dutycycle: () -> Double): Command {
         return runOnce { 
             intake(dutycycle())
         }
     }
     
-    fun stop(): Command {
-        return intake { 0.0 }
-    }
+    val intake: Command = intake { IntakeConstants.kIntakeSpeed }
+    val outTake: Command = intake { -IntakeConstants.kIntakeSpeed }
     
+    val extend: Command = extend { true }
+    val unextend: Command = extend { false }
+    
+    val stop: Command = intake { 0.0 }
      
     private val ballSensor: AnalogInput = AnalogInput(IntakeConstants.kIntakeAnalogSensorChannel)
      
@@ -65,28 +66,20 @@ object Intake : SubsystemBase() {
     
     val countedBalls: Int
     get() {
-        return MathUtil.clamp(currentCount, 0, 100)
+        return currentCount
     }
     
     private var isBallDetectedPast: Boolean = false
     private var currentCount: Int = 0
     private var sensorDisabled: Boolean = false
     
-     fun disableSensor(disabled: Boolean): Command {
+    val hasBalls: Boolean = countedBalls >= 2
+    val clearCount: Command = runOnce { currentCount = 0 }
+    
+    fun disableSensor(disabled: Boolean): Command {
         return runOnce { 
             sensorDisabled = disabled
         }
-     }
-    
-    
-    fun clearCount(): Command {
-        return runOnce { 
-            currentCount = 0
-        }
-    }
-    
-    init {
-        currentCount = 0
     }
 
     override fun periodic() {
@@ -99,11 +92,9 @@ object Intake : SubsystemBase() {
         SmartDashboard.putNumber("Intake/Sensor_Current", ballSensor.voltage)
         
         if (ballDetected && !isBallDetectedPast && !sensorDisabled && sign(intakeMotor.get()) == 1.0) 
-            currentCount++
+            MathUtil.clamp(currentCount++, 0, 3)
         // else if (ballDetected && !isBallDetectedPast && !sensorDisabled && sign(intakeMotor.get()) == -1.0)  
         //     currentCount--  
-    
-       
         
         SmartDashboard.putNumber("Intake/Current_Ball_Count", countedBalls.toDouble())
         

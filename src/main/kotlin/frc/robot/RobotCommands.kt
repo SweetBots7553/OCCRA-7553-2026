@@ -1,11 +1,6 @@
 package frc.robot
 
-import com.pathplanner.lib.auto.NamedCommands
-import edu.wpi.first.wpilibj.event.BooleanEvent
-import edu.wpi.first.wpilibj.event.EventLoop
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
-import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.constants.IndexerConstants
@@ -21,61 +16,39 @@ class RobotCommands(
     private val indexer: Indexer
 ) :
     SubsystemBase() {
-        
-        
-     val hasBalls: Boolean 
-        get() {
-            return intake.countedBalls >= 2
-        }    
     
-    private val extend: Command
-        get() {
-            return intake.extend { true }
-        }
-
-    private val unextend: Command
-        get() {
-            return intake.extend { false }
-        }
-
-    val primeShooter: Command
+    private val primeShooter: Command
         get() {
             val disableSensor = intake.disableSensor(true)
 
-            val backup =
-                indexer.index { -IndexerConstants.kIndexerSpeed }
-                    .andThen(Commands.waitSeconds(0.4))
-                    .andThen(indexer.stop())
+            val backup = 
+                Commands.sequence(indexer.outdexing, 
+                Commands.waitSeconds(0.4), 
+                indexer.stop)
 
-            val runShooter = shooter.shoot { ShooterConstants.kShooterSpeed }
-
-            return Commands.sequence(extend, shooter.shoot { -ShooterConstants.kShooterSpeed }, backup, runShooter)
+            return Commands.sequence(
+                intake.extend, 
+                    shooter.intake, 
+                    backup, 
+                    shooter.shoot)
         }
 
     val shootCommand: Command
         get() {
-            val shoot = indexer.index { IndexerConstants.kIndexerSpeed }.alongWith(shooter.shoot { ShooterConstants.kShooterSpeed })
+            val shoot = indexer.indexing.alongWith(shooter.shoot)
             
-            return primeShooter.andThen(Commands.waitSeconds(0.8).andThen(shoot).andThen(intake.clearCount()))
+            return Commands.sequence(primeShooter, Commands.waitSeconds(0.8), shoot, intake.clearCount)
         }
-
-    val stopShootCommand: Command
-        get() {
-            return indexer
-                .stop()
-                .andThen(shooter.stop()).andThen(unextend)
-        }
-
 
     val intakeCommand: Command
         get() {
             val enableSensor = intake.disableSensor(false)
 
-            val intakeStart = extend
-                .andThen(intake.intake { IntakeConstants.kIntakeSpeed }
-                    .alongWith(indexer.index { IndexerConstants.kIndexerSpeed }))
-
-    
+            val intakeStart = 
+                Commands.sequence(
+                    intake.extend, 
+                        intake.intake
+                            .alongWith(indexer.indexing))
 
             return enableSensor.andThen(intakeStart)
         }
@@ -84,24 +57,17 @@ class RobotCommands(
         get(){
             val enableSensor = intake.disableSensor(false)
             
-            val intakeStart = extend
-                .andThen(intake.intake { -IntakeConstants.kIntakeSpeed }
-                    .alongWith(indexer.index { -IndexerConstants.kIndexerSpeed }))
-            val shooterStart = shooter.shoot { -ShooterConstants.kShooterSpeed }
-                    
-                    
-            return enableSensor.andThen(intakeStart.alongWith(shooterStart)).andThen(intake.clearCount())
+            val intakeStart = intake.extend.andThen(intake.outTake.alongWith(indexer.outdexing))   
+        
+            return enableSensor.andThen(intakeStart.alongWith(shooter.shoot)).andThen(intake.clearCount)
         }
     
 
+    private val stop: Command = Commands.sequence(intake.stop, indexer.stop, shooter.stop, intake.unextend)
 
-    val stopIntake: Command
-    get() {
-        return Commands.waitUntil { hasBalls }.andThen(intake.stop().andThen(indexer.stop()).andThen(unextend))
-    }
-
-    val stopOutTaking: Command
-    get() {
-        return Commands.waitUntil { !hasBalls }.andThen(intake.stop().andThen(indexer.stop().alongWith(shooter.stop())).andThen(unextend))
-    }
+    val stopIntake: Command = Commands.sequence(Commands.waitUntil { intake.hasBalls }, stop)
+    
+    val stopShootCommand: Command = Commands.sequence(indexer.stop, shooter.stop, intake.unextend)
+    
+    val stopOutTaking: Command = Commands.sequence(Commands.waitUntil { !intake.hasBalls }, stop)
 }

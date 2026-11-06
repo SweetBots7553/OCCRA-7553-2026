@@ -25,22 +25,19 @@ object Shooter : SubsystemBase() {
         shooterMotor.configure(ShooterConstants.kShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
     }
     
-    val isShooterPrimed: Boolean = shooterMotor.encoder.velocity >= (shooterMotor.closedLoopController.setpoint - ShooterConstants.kSetpointThreshold)
+    val isShooterPrimed: Boolean = shooterMotor.encoder.velocity >= shooterMotor.closedLoopController.setpoint
         
     private fun shoot(dutycycle: Double) {
         shooterMotor.closedLoopController.setSetpoint(dutycycle, SparkBase.ControlType.kDutyCycle)
     }
 
-    fun shoot(dutycycle: () -> Double): Command {
-        return runOnce { 
-            shoot(dutycycle())
-        }
-    }
+    private fun shoot(dutycycle: () -> Double): Command = runOnce { shoot(dutycycle()) }
     
-    fun stop(): Command {
-        return shoot { 0.0 }
-    }
+    val stop: Command = shoot { 0.0 }
     
+    val shoot: Command = shoot { ShooterConstants.kShooterSpeed }
+    val intake: Command = shoot { -ShooterConstants.kShooterSpeed }
+
     // sysid
 
     private val routine: SysIdRoutine

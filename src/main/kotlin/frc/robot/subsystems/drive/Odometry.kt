@@ -62,15 +62,12 @@ class Odometry(private val driveTrain: DriveTrain) : SubsystemBase() {
     init {
         // disable holographic movement 
         val config = RobotConfig.fromGUISettings()
-        
+
         AutoBuilder.configure(
             { currentPose },
             { resetPose },
             { chassisSpeeds },
             { speeds: ChassisSpeeds, _: DriveFeedforwards ->
-
-           
-
                 driveTrain.drive(speeds)
             },
             OdometryConstants.kPathController,
@@ -82,17 +79,8 @@ class Odometry(private val driveTrain: DriveTrain) : SubsystemBase() {
         )
     }
 
-    // NT data
-
-    // field view
-    private val field = Field2d()
-
     override fun periodic() {
         odometry.update(gyro.rotation2d, wheelpositions)
-        
-        field.robotPose = currentPose
-        
-        SmartDashboard.putData("odometry/odometry-field", field)
 
         SmartDashboard.putNumber("odometry/pose/x", currentPose.x)
         SmartDashboard.putNumber("odometry/pose/y", currentPose.y)

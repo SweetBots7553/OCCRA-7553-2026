@@ -20,53 +20,29 @@ import frc.robot.subsystems.drive.Odometry
 import frc.robot.subsystems.drive.genAutoEntries
 
 object RobotContainer {
-    // operator controllers
-    private val driverController = CommandXboxController(OperatorConstats.kDriverPort)
-    private val coDriverController = CommandXboxController(OperatorConstats.kCoDriverPort)
-
     // subsystems
     private val driveTrain = DriveTrain
     private val odometry = Odometry(driveTrain)
     private val intake = Intake
     private val shooter = Shooter
     private val indexer = Indexer
-    
-   
 
-    // private val eventLoop: EventLoop = EventLoop()
-    
-     private val robotCommands: RobotCommands = RobotCommands(intake, shooter, indexer)
-    
-    // private val hasBallEvent: BooleanEvent = BooleanEvent(eventLoop) {
-    //     robotCommands.hasBalls
-    // }
-    
-    // private val notHasBallEvent: BooleanEvent = BooleanEvent(eventLoop) {
-    //     !robotCommands.hasBalls
-    // }
-    
-    
-    // controls
-    init {
-        val threshold = OperatorConstats.kDeadbandThreshold
-        
-        // arcade control
-        driveTrain.defaultCommand = driveTrain.drive(
-            { -MathUtil.applyDeadband(driverController.leftY, threshold) },
-            { -MathUtil.applyDeadband(driverController.rightX, threshold) }
-        )
-        
-        coDriverController.b().whileTrue(robotCommands.intakeCommand).onFalse(robotCommands.stopIntake)
-        coDriverController.leftBumper().whileTrue(robotCommands.outTakeCommand).onFalse(robotCommands.stopOutTaking)
-        coDriverController.a().whileTrue(robotCommands.shootCommand).onFalse(robotCommands.stopShootCommand)
-    }
+    private val robotCommands: RobotCommands = RobotCommands(intake, shooter, indexer)
 
-    
+    private val driverController: CommandXboxController = OperatorConstats.driverController(driveTrain, robotCommands)
+    private val coDriverController: CommandXboxController = OperatorConstats.coDriverController(robotCommands)
+
     // auto
-
     val auto = genAutoEntries()
-    
-    
+
     val autonomousCommand: Command
-        get() = Commands.sequence(driveTrain.drive({-0.3}, {0.0}), Commands.waitSeconds(1.4).andThen(driveTrain.drive({0.0}, {0.0}), robotCommands.shootCommand, Commands.waitSeconds(2.0), robotCommands.stopShootCommand))
+        get() = Commands.sequence(
+            driveTrain.drive({ -0.3 }, { 0.0 }),
+            Commands.waitSeconds(1.4).andThen(
+                driveTrain.drive({ 0.0 }, { 0.0 }),
+                robotCommands.shootCommand,
+                Commands.waitSeconds(2.0),
+                robotCommands.stopShootCommand
+            )
+        )
 }

@@ -7,7 +7,7 @@ import edu.wpi.first.units.Units
 import edu.wpi.first.units.measure.Distance
 import kotlin.math.PI
 
-object ShooterConstants  {
+object ShooterConstants {
     const val kShooterMotorCANID = 33
 
     // m/s 
@@ -19,14 +19,14 @@ object ShooterConstants  {
     val kShooterConfig: SparkFlexConfig
         get() {
             val config = SparkFlexConfig()
-            
+
             config.inverted(true)
-            
+
             config.smartCurrentLimit(45)
 
             config.closedLoop
                 .maxOutput(1.0)
-                .pid(0.0, 0.0, 0.0)
+                .pid(0.1, 0.0, 0.0)
 
             val positionFactor = PI * kShooterWheelDiameter.`in`(Units.Meters)
 

@@ -16,25 +16,30 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine
 import frc.robot.constants.IntakeConstants
 import frc.robot.constants.ShooterConstants
+import kotlin.math.abs
 
 object Shooter : SubsystemBase() {
 
     private val shooterMotor = SparkFlex(ShooterConstants.kShooterMotorCANID, SparkLowLevel.MotorType.kBrushless)
 
     init {
-        shooterMotor.configure(ShooterConstants.kShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
+        shooterMotor.configure(
+            ShooterConstants.kShooterConfig,
+            ResetMode.kResetSafeParameters,
+            PersistMode.kPersistParameters
+        )
     }
-    
-    val isShooterPrimed: Boolean = shooterMotor.encoder.velocity >= shooterMotor.closedLoopController.setpoint
-        
+
+    val isShooterPrimed: Boolean get() = abs(shooterMotor.encoder.velocity - shooterMotor.closedLoopController.setpoint) >= ShooterConstants.kSetpointThreshold
+
     private fun shoot(dutycycle: Double) {
         shooterMotor.closedLoopController.setSetpoint(dutycycle, SparkBase.ControlType.kDutyCycle)
     }
 
     private fun shoot(dutycycle: () -> Double): Command = runOnce { shoot(dutycycle()) }
-    
+
     val stop: Command = shoot { 0.0 }
-    
+
     val shoot: Command = shoot { ShooterConstants.kShooterSpeed }
     val intake: Command = shoot { -ShooterConstants.kShooterSpeed }
 
@@ -90,7 +95,7 @@ object Shooter : SubsystemBase() {
 
     override fun periodic() {
         val primed = isShooterPrimed
-        
+
         SmartDashboard.putNumber("Shooter/Shooter_Motor", shooterMotor.get())
         SmartDashboard.putBoolean("Shooter/Shooter_Primed", primed)
     }

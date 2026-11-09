@@ -1,6 +1,8 @@
 package frc.robot
 
 import com.pathplanner.lib.auto.NamedCommands
+import edu.wpi.first.wpilibj.event.BooleanEvent
+import edu.wpi.first.wpilibj.event.EventLoop
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.SubsystemBase
@@ -15,7 +17,12 @@ class RobotCommands(
 ) :
     SubsystemBase() {
 
+    private val eventLoop: EventLoop = EventLoop()
+    private val hasBallEvent: BooleanEvent = BooleanEvent(eventLoop) { intake.hasBalls }
+    private var automatic: Boolean = false
+
     init {
+        // commands auto
         NamedCommands.registerCommand("shoot", shootCommand)
         NamedCommands.registerCommand("stop-shoot", stopShootCommand)
 
@@ -24,6 +31,13 @@ class RobotCommands(
 
         NamedCommands.registerCommand("outTake", outTakeCommand)
         NamedCommands.registerCommand("stop-outTake", stopOutTaking)
+
+        hasBallEvent.ifHigh {
+            if (automatic) {
+
+            }
+        }
+
     }
 
     private val primeShooter: Command
@@ -47,9 +61,12 @@ class RobotCommands(
 
     val shootCommand: Command
         get() {
-            val shoot = indexer.indexing.alongWith(shooter.shoot)
-
-            return Commands.sequence(primeShooter, Commands.waitSeconds(0.8), shoot, intake.clearCount)
+            return Commands.sequence(
+                primeShooter,
+                Commands.waitUntil { shooter.isShooterPrimed },
+                indexer.indexing,
+                intake.clearCount
+            )
         }
 
     val intakeCommand: Command
@@ -79,4 +96,11 @@ class RobotCommands(
     val stopShootCommand: Command get() = Commands.sequence(indexer.stop, shooter.stop, intake.unextend)
 
     val stopOutTaking: Command get() = Commands.sequence(Commands.waitUntil { !intake.hasBalls }, stop)
+
+    val toggleAutomatic: Command get() = runOnce { }
+
+
+    override fun periodic() {
+        eventLoop.poll()
+    }
 }

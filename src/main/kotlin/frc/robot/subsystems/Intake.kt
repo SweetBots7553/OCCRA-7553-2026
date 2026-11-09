@@ -94,8 +94,8 @@ object Intake : SubsystemBase() {
 
         if (ballDetected && !isBallDetectedPast && sensorEnabled && sign(intakeMotor.get()) == 1.0)
             MathUtil.clamp(currentCount++, 0, 3)
-        // else if (ballDetected && !isBallDetectedPast && !sensorDisabled && sign(intakeMotor.get()) == -1.0)  
-        //     currentCount--  
+        else if (ballDetected && !isBallDetectedPast && sensorEnabled && sign(intakeMotor.get()) == -1.0)
+            MathUtil.clamp(currentCount--, 0, 3)
 
         SmartDashboard.putNumber("Intake/Current_Ball_Count", countedBalls.toDouble())
 

@@ -6,6 +6,8 @@ import edu.wpi.first.math.MathUtil
 import edu.wpi.first.wpilibj.AnalogInput
 import edu.wpi.first.wpilibj.PneumaticsModuleType
 import edu.wpi.first.wpilibj.Solenoid
+import edu.wpi.first.wpilibj.event.BooleanEvent
+import edu.wpi.first.wpilibj.event.EventLoop
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
@@ -22,10 +24,7 @@ object Intake : SubsystemBase() {
         intakeMotor.configAllSettings(IntakeConstants.kIntakeMotorConfig)
     }
 
-    val isExtended: Boolean
-        get() {
-            return solenoid.get()
-        }
+    val isExtended: Boolean get() = solenoid.get()
 
     private fun extend(b: Boolean) {
         if (b == solenoid.get())
@@ -60,21 +59,13 @@ object Intake : SubsystemBase() {
 
     private val ballSensor: AnalogInput = AnalogInput(IntakeConstants.kIntakeAnalogSensorChannel)
 
-    val isBallDetected: Boolean
-        get() {
-            return ballSensor.voltage > IntakeConstants.kBallDetectionThreshold
-        }
+    val isBallDetected: Boolean get() = ballSensor.voltage > IntakeConstants.kBallDetectionThreshold
+    val countedBalls: Int get() = currentCount
 
-    val countedBalls: Int
-        get() {
-            return currentCount
-        }
-
-    private var isBallDetectedPast: Boolean = false
     private var currentCount: Int = 0
     private var sensorEnabled: Boolean = true
 
-    val hasBalls: Boolean = countedBalls >= 2
+    val hasBalls: Boolean get() = countedBalls >= 2
     val clearCount: Command = runOnce { currentCount = 0 }
 
     fun enabled(enabled: Boolean): Command {
@@ -83,23 +74,27 @@ object Intake : SubsystemBase() {
         }
     }
 
-    override fun periodic() {
-        val ballDetected = isBallDetected
+    private val eventLoop: EventLoop = EventLoop()
+    private val countEvent: BooleanEvent = BooleanEvent(eventLoop) { isBallDetected }
 
+    init {
+        countEvent.ifHigh {
+            val ballDetected = isBallDetected && sensorEnabled
+
+            if (ballDetected && sign(intakeMotor.get()) == 1.0)
+                MathUtil.clamp(currentCount++, 0, 3)
+            else if (ballDetected && sign(intakeMotor.get()) == -1.0)
+                MathUtil.clamp(currentCount--, 0, 3)
+        }
+    }
+
+    override fun periodic() {
+        eventLoop.poll()
         SmartDashboard.putBoolean("Intake/Intake_Extended", solenoid.get())
         SmartDashboard.putNumber("Intake/Intake_Motor", intakeMotor.get())
-        SmartDashboard.putBoolean("Intake/Ball_is_Detected", ballDetected)
-
+        SmartDashboard.putBoolean("Intake/Ball_is_Detected", isBallDetected)
         SmartDashboard.putNumber("Intake/Sensor_Current", ballSensor.voltage)
-
-        if (ballDetected && !isBallDetectedPast && sensorEnabled && sign(intakeMotor.get()) == 1.0)
-            MathUtil.clamp(currentCount++, 0, 3)
-        else if (ballDetected && !isBallDetectedPast && sensorEnabled && sign(intakeMotor.get()) == -1.0)
-            MathUtil.clamp(currentCount--, 0, 3)
-
         SmartDashboard.putNumber("Intake/Current_Ball_Count", countedBalls.toDouble())
-
-        isBallDetectedPast = isBallDetected
     }
 
 

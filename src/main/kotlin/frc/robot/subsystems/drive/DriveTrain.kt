@@ -20,21 +20,44 @@ import kotlin.math.abs
 
 object DriveTrain : SubsystemBase() {
 
-    val kinematics = DifferentialDriveKinematics(DriveTrainConstants.kTrackWidth)
+    private val kinematics = DifferentialDriveKinematics(DriveTrainConstants.kTrackWidth)
 
-    val frontLeftNeo = SparkMax(DriveTrainConstants.kFrontLeftNeoCANID, MotorType.kBrushless)
-    val frontRightNeo = SparkMax(DriveTrainConstants.kFrontRightNeoCANID, MotorType.kBrushless)
+    private val frontLeftNeo = SparkMax(DriveTrainConstants.kFrontLeftNeoCANID, MotorType.kBrushless)
+    private val frontRightNeo = SparkMax(DriveTrainConstants.kFrontRightNeoCANID, MotorType.kBrushless)
     private val backLeftNeo = SparkMax(DriveTrainConstants.kBackLeftNeoCANID, MotorType.kBrushless)
     private val backRightNeo = SparkMax(DriveTrainConstants.kBackRightNeoCANID, MotorType.kBrushless)
 
+    private val odometry = Odometry(
+        this,
+        kinematics,
+        frontLeftNeo.encoder,
+        frontRightNeo.encoder,
+        backLeftNeo.encoder,
+        backRightNeo.encoder
+    )
+
     // config
     init {
-        frontLeftNeo.configure(DriveTrainConstants.kFrontLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
-        frontRightNeo.configure(DriveTrainConstants.kFrontRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
-        backLeftNeo.configure(DriveTrainConstants.kBackLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
-        backRightNeo.configure(DriveTrainConstants.kBackRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
-
-     
+        frontLeftNeo.configure(
+            DriveTrainConstants.kFrontLeftConfig,
+            ResetMode.kResetSafeParameters,
+            PersistMode.kPersistParameters
+        )
+        frontRightNeo.configure(
+            DriveTrainConstants.kFrontRightConfig,
+            ResetMode.kResetSafeParameters,
+            PersistMode.kPersistParameters
+        )
+        backLeftNeo.configure(
+            DriveTrainConstants.kBackLeftConfig,
+            ResetMode.kResetSafeParameters,
+            PersistMode.kPersistParameters
+        )
+        backRightNeo.configure(
+            DriveTrainConstants.kBackRightConfig,
+            ResetMode.kResetSafeParameters,
+            PersistMode.kPersistParameters
+        )
     }
 
     fun drive(x: () -> Double, r: () -> Double): Command {
@@ -43,7 +66,7 @@ object DriveTrain : SubsystemBase() {
                 ChassisSpeeds(
                     x() * DriveTrainConstants.kSpeedFactor,
                     0.0,
-                    r() * DriveTrainConstants.kRotationPerSecond 
+                    r() * DriveTrainConstants.kRotationPerSecond
                 )
             )
         }
@@ -59,10 +82,10 @@ object DriveTrain : SubsystemBase() {
         frontLeftNeo.closedLoopController.setSetpoint(leftSpeed, SparkBase.ControlType.kVelocity)
         frontRightNeo.closedLoopController.setSetpoint(rightSpeed, SparkBase.ControlType.kVelocity)
     }
-    
+
 
     fun stop(): Command {
-        return runOnce { 
+        return runOnce {
             drive(ChassisSpeeds())
         }
     }
@@ -119,21 +142,10 @@ object DriveTrain : SubsystemBase() {
         return routine.dynamic(dir)
     }
 
-    fun forwardsysIdQuasistatic(): Command {
-        return sysIdDynamic(SysIdRoutine.Direction.kForward)
-    }
-
-    fun forwardsysIdDynamic(): Command {
-        return sysIdDynamic(SysIdRoutine.Direction.kForward)
-    }
-
-    fun reversesysIdQuasistatic(): Command {
-        return sysIdQuasistatic(SysIdRoutine.Direction.kReverse)
-    }
-
-    fun reversesysIdDynamic(): Command {
-        return sysIdDynamic(SysIdRoutine.Direction.kReverse)
-    }
+    val forwardsysIdQuasistatic: Command = sysIdDynamic(SysIdRoutine.Direction.kForward)
+    val forwardsysIdDynamic: Command = sysIdDynamic(SysIdRoutine.Direction.kForward)
+    val reversesysIdQuasistatic: Command = sysIdQuasistatic(SysIdRoutine.Direction.kReverse)
+    val reversesysIdDynamic: Command = sysIdDynamic(SysIdRoutine.Direction.kReverse)
 
     override fun periodic() {
         SmartDashboard.putNumber("chassis/speeds/Front_left_Velocity", frontLeftNeo.encoder.velocity)

@@ -22,7 +22,6 @@ import frc.robot.subsystems.drive.genAutoEntries
 object RobotContainer {
     // subsystems
     private val driveTrain = DriveTrain
-    private val odometry = Odometry(driveTrain)
     private val intake = Intake
     private val shooter = Shooter
     private val indexer = Indexer

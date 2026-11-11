@@ -3,6 +3,7 @@ package frc.robot.subsystems.drive
 import com.pathplanner.lib.auto.AutoBuilder
 import com.pathplanner.lib.config.RobotConfig
 import com.pathplanner.lib.util.DriveFeedforwards
+import com.revrobotics.RelativeEncoder
 import com.revrobotics.spark.SparkMax
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
@@ -13,17 +14,22 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds
 import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.ADXRS450_Gyro
 import edu.wpi.first.wpilibj.DriverStation
+import edu.wpi.first.wpilibj.event.EventLoop
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.constants.OdometryConstants
 
-class Odometry(private val driveTrain: DriveTrain) : SubsystemBase() {
+class Odometry(
+    private val driveTrain: DriveTrain,
+    private val kinematics: DifferentialDriveKinematics,
+    private val frontLeftEncoder: RelativeEncoder,
+    private val frontRightEncoder: RelativeEncoder,
+    private val backLeftEncoder: RelativeEncoder,
+    private val backRightEncoder: RelativeEncoder
+) : SubsystemBase() {
 
-    private val frontLeftEncoder = driveTrain.frontLeftNeo.encoder
-    private val frontRightEncoder = driveTrain.frontRightNeo.encoder
     private val gyro = ADXRS450_Gyro()
-
     private val resetPose = Pose2d()
 
     private val odometry =
@@ -34,25 +40,21 @@ class Odometry(private val driveTrain: DriveTrain) : SubsystemBase() {
             resetPose
         )
 
-    val currentPose: Pose2d
-        get() {
-            return odometry.poseMeters
-        }
+    val currentPose: Pose2d get() = odometry.poseMeters
 
     private val wheelpositions: DifferentialDriveWheelPositions
-        get() {
-            return DifferentialDriveWheelPositions(frontLeftEncoder.position, frontRightEncoder.position)
-        }
+        get() = DifferentialDriveWheelPositions(
+            frontLeftEncoder.position,
+            frontRightEncoder.position
+        )
 
     private val wheelvelocitys: DifferentialDriveWheelSpeeds
-        get() {
-            return DifferentialDriveWheelSpeeds(frontLeftEncoder.velocity, frontRightEncoder.velocity)
-        }
+        get() = DifferentialDriveWheelSpeeds(
+            frontLeftEncoder.velocity,
+            frontRightEncoder.velocity
+        )
 
-    private val chassisSpeeds: ChassisSpeeds
-        get() {
-            return driveTrain.kinematics.toChassisSpeeds(wheelvelocitys)
-        }
+    private val chassisSpeeds: ChassisSpeeds get() = kinematics.toChassisSpeeds(wheelvelocitys)
 
     fun resetOdometry() {
         odometry.resetPosition(gyro.rotation2d, wheelpositions, resetPose)
@@ -84,6 +86,6 @@ class Odometry(private val driveTrain: DriveTrain) : SubsystemBase() {
 
         SmartDashboard.putNumber("odometry/pose/x", currentPose.x)
         SmartDashboard.putNumber("odometry/pose/y", currentPose.y)
-        SmartDashboard.putNumber("odometry/pose/rotation", currentPose.rotation.radians)
+        SmartDashboard.putNumber("odometry/pose/rotation", currentPose.rotation.degrees)
     }
 }

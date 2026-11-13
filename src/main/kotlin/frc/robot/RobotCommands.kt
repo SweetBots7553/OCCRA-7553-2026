@@ -31,26 +31,14 @@ class RobotCommands(
 
         NamedCommands.registerCommand("outTake", outTakeCommand)
         NamedCommands.registerCommand("stop-outTake", stopOutTaking)
-
-        hasBallEvent.ifHigh {
-            if (automatic) {
-
-            }
-        }
-
     }
 
     private val primeShooter: Command
         get() {
             val disableSensor = intake.enabled(false)
 
-            val backup =
-                Commands.sequence(
-                    indexer.outdexing,
-                    Commands.waitSeconds(0.4),
-                    indexer.stop
-                )
-
+            val backup = Commands.sequence(indexer.outdexing, Commands.waitSeconds(0.4), indexer.stop)
+            
             return Commands.sequence(
                 intake.extend,
                 shooter.intake,
@@ -84,22 +72,19 @@ class RobotCommands(
             val enableSensor = intake.enabled(true)
 
             val intakeStart = intake.extend.andThen(intake.outTake.alongWith(indexer.outdexing))
-
-            return enableSensor.andThen(intakeStart.alongWith(shooter.shoot)).andThen(intake.clearCount)
+            
+            return Commands.sequence(enableSensor, intakeStart.alongWith(shooter.shoot), intake.clearCount)
         }
 
 
-    private val stop: Command = Commands.sequence(intake.stop, indexer.stop, shooter.stop, intake.unextend)
+    private val stop: Command get() = Commands.sequence(intake.stop, indexer.stop, shooter.stop, intake.unextend)
 
     val stopIntake: Command get() = Commands.sequence(Commands.waitUntil { intake.hasBalls }, stop)
 
     val stopShootCommand: Command get() = Commands.sequence(indexer.stop, shooter.stop, intake.unextend)
 
     val stopOutTaking: Command get() = Commands.sequence(Commands.waitUntil { !intake.hasBalls }, stop)
-
-    val toggleAutomatic: Command get() = runOnce { }
-
-
+    
     override fun periodic() {
         eventLoop.poll()
     }

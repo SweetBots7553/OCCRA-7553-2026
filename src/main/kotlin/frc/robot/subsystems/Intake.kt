@@ -49,13 +49,13 @@ object Intake : SubsystemBase() {
         }
     }
 
-    val intake: Command = intake { IntakeConstants.kIntakeSpeed }
-    val outTake: Command = intake { -IntakeConstants.kIntakeSpeed }
+    val intake: Command get() = intake { IntakeConstants.kIntakeSpeed }
+    val outTake: Command get()  = intake { -IntakeConstants.kIntakeSpeed }
 
-    val extend: Command = extend { true }
-    val unextend: Command = extend { false }
+    val extend: Command get() = extend { true }
+    val unextend: Command get() = extend { false }
 
-    val stop: Command = intake { 0.0 }
+    val stop: Command get() = intake { 0.0 }
 
     private val ballSensor: AnalogInput = AnalogInput(IntakeConstants.kIntakeAnalogSensorChannel)
 
@@ -66,7 +66,7 @@ object Intake : SubsystemBase() {
     private var sensorEnabled: Boolean = true
 
     val hasBalls: Boolean get() = countedBalls >= 2
-    val clearCount: Command = runOnce { currentCount = 0 }
+    val clearCount: Command get() = runOnce { currentCount = 0 }
 
     fun enabled(enabled: Boolean): Command {
         return runOnce {
@@ -78,13 +78,18 @@ object Intake : SubsystemBase() {
     private val countEvent: BooleanEvent = BooleanEvent(eventLoop) { isBallDetected }
 
     init {
-        countEvent.ifHigh {
+        countEvent.rising().ifHigh { 
             val ballDetected = isBallDetected && sensorEnabled
+            
+            val motorDirection = sign(intakeMotor.get())
 
-            if (ballDetected && sign(intakeMotor.get()) == 1.0)
-                MathUtil.clamp(currentCount++, 0, 3)
-            else if (ballDetected && sign(intakeMotor.get()) == -1.0)
-                MathUtil.clamp(currentCount--, 0, 3)
+            if (ballDetected && motorDirection == 1.0) {
+                currentCount++
+                currentCount = MathUtil.clamp(currentCount, 0, 3)
+            } else if (ballDetected && motorDirection == -1.0) {
+                currentCount--
+                currentCount = MathUtil.clamp(currentCount, 0, 3)
+            }
         }
     }
 

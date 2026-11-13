@@ -7,7 +7,7 @@ import kotlin.math.PI
 
 object IndexerConstants {
     const val kIndexerMotorCANID = 32
-    const val kIndexerSpeed = 0.6
+    const val kIndexerSpeed = 0.7
     
     // const val kIndexerSensorChannel = 1
 

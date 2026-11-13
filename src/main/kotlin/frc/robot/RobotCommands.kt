@@ -73,7 +73,7 @@ class RobotCommands(
 
             val intakeStart = intake.extend.andThen(intake.outTake.alongWith(indexer.outdexing))
             
-            return Commands.sequence(enableSensor, intakeStart.alongWith(shooter.shoot), intake.clearCount)
+            return Commands.sequence(enableSensor, intakeStart.alongWith(shooter.intake), intake.clearCount)
         }
 
 

@@ -17,6 +17,7 @@ import frc.robot.subsystems.Indexer
 import frc.robot.subsystems.Intake
 import frc.robot.subsystems.Shooter
 import frc.robot.subsystems.drive.Odometry
+import frc.robot.subsystems.drive.genAutoEntries
 
 // import frc.robot.subsystems.drive.genAutoEntries
 
@@ -29,20 +30,26 @@ object RobotContainer {
 
     private val robotCommands: RobotCommands = RobotCommands(intake, shooter, indexer)
 
-    private val driverController: CommandXboxController = OperatorConstats.driverController(driveTrain, robotCommands)
+    // private val driverController: CommandXboxController = OperatorConstats.driverController(driveTrain, robotCommands)
     private val coDriverController: CommandXboxController = OperatorConstats.coDriverController(robotCommands)
 
+    
+    private val driverController: CommandXboxController = OperatorConstats.debugController(driveTrain, robotCommands)
+    
     // auto
-    // val auto = genAutoEntries()
+    val auto = genAutoEntries()
 
-    val autonomousCommand: Command
-        get() = Commands.sequence(
-            driveTrain.drive({ -0.3 }, { 0.0 }),
-            Commands.waitSeconds(1.4).andThen(
-                driveTrain.drive({ 0.0 }, { 0.0 }),
-                robotCommands.shootCommand,
-                Commands.waitSeconds(2.0),
-                robotCommands.stopShootCommand
-            )
-        )
+    // val autonomousCommand: Command
+    //     get() = Commands.sequence(
+    //         driveTrain.drive({ -0.3 }, { 0.0 }),
+    //         Commands.waitSeconds(1.4).andThen(
+    //             driveTrain.drive({ 0.0 }, { 0.0 }),
+    //             robotCommands.shootCommand,
+    //             Commands.waitSeconds(2.0),
+    //             robotCommands.stopShootCommand
+    //         )
+    //     )
+    
+    val autonomousCommand: Command get() = auto.auto
+    
 }

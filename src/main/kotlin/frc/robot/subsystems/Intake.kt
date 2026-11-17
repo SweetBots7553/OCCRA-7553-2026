@@ -78,14 +78,12 @@ object Intake : SubsystemBase() {
     private val countEvent: BooleanEvent = BooleanEvent(eventLoop) { isBallDetected }
 
     init {
-        countEvent.ifHigh {
+        countEvent.rising().ifHigh {
             val ballDetected: Boolean = isBallDetected && sensorEnabled
-            val forward: Boolean = sign(intakeMotor.get()) == 1.0
+            val forward: Boolean = sign(intakeMotor.get()) == 1.0 || sign(intakeMotor.get()) == 0.0 
 
             if (ballDetected && forward)
                 MathUtil.clamp(currentCount++, 0, 100)
-            else if (ballDetected)
-                MathUtil.clamp(currentCount--, 0, 100)
         }
     }
 

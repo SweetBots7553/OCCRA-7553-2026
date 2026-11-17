@@ -28,9 +28,11 @@ class Odometry(
     private val frontRightEncoder: RelativeEncoder,
     private val backLeftEncoder: RelativeEncoder,
     private val backRightEncoder: RelativeEncoder
-) : SubsystemBase() {
+) : SubsystemBase() {  
 
     private val gyro = Pigeon2(OdometryConstants.kPigionCAN)
+    private val relativePosition = Pose2d()
+    
     private val resetPose = Pose2d()
 
     private val odometry =
@@ -57,9 +59,34 @@ class Odometry(
 
     private val chassisSpeeds: ChassisSpeeds get() = kinematics.toChassisSpeeds(wheelvelocitys)
 
+    // val alignFactor: ChassisSpeeds  
+    //     get() {
+    //         val delta = currentPose.minus(relativePosition)
+            
+            
+            
+            
+    //     }
+    
     fun resetOdometry() {
         odometry.resetPosition(gyro.rotation2d, wheelpositions, resetPose)
     }
+    
+    init {
+        AutoBuilder.configure(
+           { currentPose }, 
+            { resetPose },
+            { chassisSpeeds }, 
+             { speeds: ChassisSpeeds, _: DriveFeedforwards ->
+                driveTrain.drive(speeds)
+            },
+            OdometryConstants.kPathController,
+            RobotConfig.fromGUISettings(),
+            {true},
+           this, driveTrain 
+        )
+    }
+    
 
     private val field = Field2d()
 

@@ -19,8 +19,6 @@ class RobotCommands(
 
     private val eventLoop: EventLoop = EventLoop()
     private val hasBallEvent: BooleanEvent = BooleanEvent(eventLoop) { intake.hasBalls }
-<<<<<<< HEAD
-=======
     private var automatic: Boolean = false
 
     init {
@@ -34,7 +32,6 @@ class RobotCommands(
         NamedCommands.registerCommand("outTake", outTakeCommand)
         NamedCommands.registerCommand("stop-outTake", stopOutTaking)
     }
->>>>>>> refs/remotes/origin/main
 
     private val primeShooter: Command
         get() {
@@ -79,24 +76,15 @@ class RobotCommands(
             return Commands.sequence(enableSensor, intakeStart.alongWith(shooter.intake), intake.clearCount)
         }
 
-<<<<<<< HEAD
-    private val stop: Command = Commands.sequence(intake.stop, indexer.stop, shooter.stop, intake.unextend)
-=======
 
     private val stop: Command get() = Commands.sequence(intake.stop, indexer.stop, shooter.stop, intake.unextend)
->>>>>>> refs/remotes/origin/main
 
     val stopIntake: Command get() = Commands.sequence(Commands.waitUntil { intake.hasBalls }, stop)
 
     val stopShootCommand: Command get() = Commands.sequence(indexer.stop, shooter.stop, intake.unextend)
 
     val stopOutTaking: Command get() = Commands.sequence(Commands.waitUntil { !intake.hasBalls }, stop)
-<<<<<<< HEAD
-
-
-=======
     
->>>>>>> refs/remotes/origin/main
     override fun periodic() {
         eventLoop.poll()
     }

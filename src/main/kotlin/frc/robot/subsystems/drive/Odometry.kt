@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drive
 
+import com.ctre.phoenix6.hardware.Pigeon2
 import com.pathplanner.lib.auto.AutoBuilder
 import com.pathplanner.lib.config.RobotConfig
 import com.pathplanner.lib.util.DriveFeedforwards
@@ -29,7 +30,7 @@ class Odometry(
     private val backRightEncoder: RelativeEncoder
 ) : SubsystemBase() {
 
-    private val gyro = ADXRS450_Gyro()
+    private val gyro = Pigeon2(OdometryConstants.kPigionCAN)
     private val resetPose = Pose2d()
 
     private val odometry =
@@ -59,33 +60,18 @@ class Odometry(
     fun resetOdometry() {
         odometry.resetPosition(gyro.rotation2d, wheelpositions, resetPose)
     }
+
+    private val field = Field2d()
+
     // auto    
-
-    init {
-        // disable holographic movement 
-        val config = RobotConfig.fromGUISettings()
-
-        AutoBuilder.configure(
-            { currentPose },
-            { resetPose },
-            { chassisSpeeds },
-            { speeds: ChassisSpeeds, _: DriveFeedforwards ->
-                driveTrain.drive(speeds)
-            },
-            OdometryConstants.kPathController,
-            config,
-            {
-                false
-            },
-            driveTrain
-        )
-    }
-
     override fun periodic() {
         odometry.update(gyro.rotation2d, wheelpositions)
 
         SmartDashboard.putNumber("odometry/pose/x", currentPose.x)
         SmartDashboard.putNumber("odometry/pose/y", currentPose.y)
         SmartDashboard.putNumber("odometry/pose/rotation", currentPose.rotation.degrees)
+
+        field.robotPose = currentPose
+        SmartDashboard.putData("field/", field)
     }
 }

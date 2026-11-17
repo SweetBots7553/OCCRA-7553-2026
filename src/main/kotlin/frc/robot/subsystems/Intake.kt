@@ -66,7 +66,7 @@ object Intake : SubsystemBase() {
     private var sensorEnabled: Boolean = true
 
     val hasBalls: Boolean get() = countedBalls >= 2
-    val clearCount: Command = runOnce { currentCount = 0 }
+    val clearCount: Command get() = runOnce { currentCount = 0 }
 
     fun enabled(enabled: Boolean): Command {
         return runOnce {
@@ -79,12 +79,13 @@ object Intake : SubsystemBase() {
 
     init {
         countEvent.ifHigh {
-            val ballDetected = isBallDetected && sensorEnabled
+            val ballDetected: Boolean = isBallDetected && sensorEnabled
+            val forward: Boolean = sign(intakeMotor.get()) == 1.0
 
-            if (ballDetected && sign(intakeMotor.get()) == 1.0)
-                MathUtil.clamp(currentCount++, 0, 3)
-            else if (ballDetected && sign(intakeMotor.get()) == -1.0)
-                MathUtil.clamp(currentCount--, 0, 3)
+            if (ballDetected && forward)
+                MathUtil.clamp(currentCount++, 0, 100)
+            else if (ballDetected)
+                MathUtil.clamp(currentCount--, 0, 100)
         }
     }
 

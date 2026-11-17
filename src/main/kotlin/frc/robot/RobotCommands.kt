@@ -19,26 +19,6 @@ class RobotCommands(
 
     private val eventLoop: EventLoop = EventLoop()
     private val hasBallEvent: BooleanEvent = BooleanEvent(eventLoop) { intake.hasBalls }
-    private var automatic: Boolean = false
-
-    init {
-        // commands auto
-        NamedCommands.registerCommand("shoot", shootCommand)
-        NamedCommands.registerCommand("stop-shoot", stopShootCommand)
-
-        NamedCommands.registerCommand("intake", intakeCommand)
-        NamedCommands.registerCommand("stop-intake", stopIntake)
-
-        NamedCommands.registerCommand("outTake", outTakeCommand)
-        NamedCommands.registerCommand("stop-outTake", stopOutTaking)
-
-        hasBallEvent.ifHigh {
-            if (automatic) {
-
-            }
-        }
-
-    }
 
     private val primeShooter: Command
         get() {
@@ -88,7 +68,6 @@ class RobotCommands(
             return enableSensor.andThen(intakeStart.alongWith(shooter.shoot)).andThen(intake.clearCount)
         }
 
-
     private val stop: Command = Commands.sequence(intake.stop, indexer.stop, shooter.stop, intake.unextend)
 
     val stopIntake: Command get() = Commands.sequence(Commands.waitUntil { intake.hasBalls }, stop)
@@ -96,8 +75,6 @@ class RobotCommands(
     val stopShootCommand: Command get() = Commands.sequence(indexer.stop, shooter.stop, intake.unextend)
 
     val stopOutTaking: Command get() = Commands.sequence(Commands.waitUntil { !intake.hasBalls }, stop)
-
-    val toggleAutomatic: Command get() = runOnce { }
 
 
     override fun periodic() {

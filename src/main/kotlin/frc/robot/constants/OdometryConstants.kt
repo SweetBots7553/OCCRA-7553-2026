@@ -5,7 +5,9 @@ import com.pathplanner.lib.controllers.PPLTVController
 import com.pathplanner.lib.controllers.PathFollowingController
 
 object OdometryConstants {
-    
+
     val kPathController = PPLTVController(0.1)
-    
+    val kPigionCAN = 0
+
+
 }

@@ -49,13 +49,13 @@ object Intake : SubsystemBase() {
         }
     }
 
-    val intake: Command = intake { IntakeConstants.kIntakeSpeed }
-    val outTake: Command = intake { -IntakeConstants.kIntakeSpeed }
+    val intake: Command get() = intake { IntakeConstants.kIntakeSpeed }
+    val outTake: Command get() = intake { -IntakeConstants.kIntakeSpeed }
 
-    val extend: Command = extend { true }
-    val unextend: Command = extend { false }
+    val extend: Command get() = extend { true }
+    val unextend: Command get() = extend { false }
 
-    val stop: Command = intake { 0.0 }
+    val stop: Command get() = intake { 0.0 }
 
     private val ballSensor: AnalogInput = AnalogInput(IntakeConstants.kIntakeAnalogSensorChannel)
 

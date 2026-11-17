@@ -19,18 +19,29 @@ class RobotCommands(
 
     private val eventLoop: EventLoop = EventLoop()
     private val hasBallEvent: BooleanEvent = BooleanEvent(eventLoop) { intake.hasBalls }
+<<<<<<< HEAD
+=======
+    private var automatic: Boolean = false
+
+    init {
+        // commands auto
+        NamedCommands.registerCommand("shoot", shootCommand)
+        NamedCommands.registerCommand("stop-shoot", stopShootCommand)
+
+        NamedCommands.registerCommand("intake", intakeCommand)
+        NamedCommands.registerCommand("stop-intake", stopIntake)
+
+        NamedCommands.registerCommand("outTake", outTakeCommand)
+        NamedCommands.registerCommand("stop-outTake", stopOutTaking)
+    }
+>>>>>>> refs/remotes/origin/main
 
     private val primeShooter: Command
         get() {
             val disableSensor = intake.enabled(false)
 
-            val backup =
-                Commands.sequence(
-                    indexer.outdexing,
-                    Commands.waitSeconds(0.4),
-                    indexer.stop
-                )
-
+            val backup = Commands.sequence(indexer.outdexing, Commands.waitSeconds(0.4), indexer.stop)
+            
             return Commands.sequence(
                 intake.extend,
                 shooter.intake,
@@ -64,19 +75,28 @@ class RobotCommands(
             val enableSensor = intake.enabled(true)
 
             val intakeStart = intake.extend.andThen(intake.outTake.alongWith(indexer.outdexing))
-
-            return enableSensor.andThen(intakeStart.alongWith(shooter.shoot)).andThen(intake.clearCount)
+            
+            return Commands.sequence(enableSensor, intakeStart.alongWith(shooter.intake), intake.clearCount)
         }
 
+<<<<<<< HEAD
     private val stop: Command = Commands.sequence(intake.stop, indexer.stop, shooter.stop, intake.unextend)
+=======
+
+    private val stop: Command get() = Commands.sequence(intake.stop, indexer.stop, shooter.stop, intake.unextend)
+>>>>>>> refs/remotes/origin/main
 
     val stopIntake: Command get() = Commands.sequence(Commands.waitUntil { intake.hasBalls }, stop)
 
     val stopShootCommand: Command get() = Commands.sequence(indexer.stop, shooter.stop, intake.unextend)
 
     val stopOutTaking: Command get() = Commands.sequence(Commands.waitUntil { !intake.hasBalls }, stop)
+<<<<<<< HEAD
 
 
+=======
+    
+>>>>>>> refs/remotes/origin/main
     override fun periodic() {
         eventLoop.poll()
     }

@@ -30,7 +30,7 @@ object Shooter : SubsystemBase() {
         )
     }
 
-    val isShooterPrimed: Boolean get() = abs(shooterMotor.encoder.velocity - shooterMotor.closedLoopController.setpoint) >= ShooterConstants.kSetpointThreshold
+    val isShooterPrimed: Boolean get() = abs(shooterMotor.encoder.velocity) >= ShooterConstants.kSetpointThreshold
 
     private fun shoot(dutycycle: Double) {
         shooterMotor.closedLoopController.setSetpoint(dutycycle, SparkBase.ControlType.kDutyCycle)
@@ -38,10 +38,10 @@ object Shooter : SubsystemBase() {
 
     private fun shoot(dutycycle: () -> Double): Command = runOnce { shoot(dutycycle()) }
 
-    val stop: Command = shoot { 0.0 }
+    val stop: Command get() = shoot { 0.0 }
 
-    val shoot: Command = shoot { ShooterConstants.kShooterSpeed }
-    val intake: Command = shoot { -ShooterConstants.kShooterSpeed }
+    val shoot: Command get() = shoot { ShooterConstants.kShooterSpeed }
+    val intake: Command get() = shoot { -ShooterConstants.kShooterSpeed }
 
     // sysid
 
@@ -96,8 +96,13 @@ object Shooter : SubsystemBase() {
     override fun periodic() {
         val primed = isShooterPrimed
 
-        SmartDashboard.putNumber("Shooter/Shooter_Motor", shooterMotor.get())
+        SmartDashboard.putNumber("Shooter/Shooter_Setpoint", shooterMotor.closedLoopController.setpoint)
+        
+        SmartDashboard.putNumber("Shooter/Shooter_Velocity", shooterMotor.encoder.velocity)
+        
+        
         SmartDashboard.putBoolean("Shooter/Shooter_Primed", primed)
+        
     }
 
 }

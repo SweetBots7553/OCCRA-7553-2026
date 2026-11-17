@@ -22,10 +22,10 @@ object Indexer : SubsystemBase() {
 
     private fun index(dutycycle: () -> Double): Command = runOnce { index ( dutycycle() ) }
     
-    val indexing: Command = index { IndexerConstants.kIndexerSpeed }
-    val outdexing: Command = index { -IndexerConstants.kIndexerSpeed }
+    val indexing: Command get() = index { IndexerConstants.kIndexerSpeed }
+    val outdexing: Command get() = index { -IndexerConstants.kIndexerSpeed }
     
-    val stop: Command = index { 0.0 }
+    val stop: Command get() = index { 0.0 }
 
     override fun periodic() {
         SmartDashboard.putNumber("Indexer/Indexer_Motor", indexerMotor.get())

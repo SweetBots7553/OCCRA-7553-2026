@@ -5,21 +5,21 @@ import com.pathplanner.lib.auto.AutoBuilder
 import com.pathplanner.lib.config.RobotConfig
 import com.pathplanner.lib.util.DriveFeedforwards
 import com.revrobotics.RelativeEncoder
-import com.revrobotics.spark.SparkMax
+import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds
-import edu.wpi.first.networktables.NetworkTableInstance
-import edu.wpi.first.wpilibj.ADXRS450_Gyro
 import edu.wpi.first.wpilibj.DriverStation
-import edu.wpi.first.wpilibj.event.EventLoop
+import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
+import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.constants.OdometryConstants
+import kotlin.math.atan2
 
 class Odometry(
     private val driveTrain: DriveTrain,
@@ -31,7 +31,7 @@ class Odometry(
 ) : SubsystemBase() {  
 
     private val gyro = Pigeon2(OdometryConstants.kPigionCAN)
-    private val relativePosition = Pose2d()
+    private var relativePosition = Pose2d()
     
     private val resetPose = Pose2d()
 
@@ -59,15 +59,6 @@ class Odometry(
 
     private val chassisSpeeds: ChassisSpeeds get() = kinematics.toChassisSpeeds(wheelvelocitys)
 
-    // val alignFactor: ChassisSpeeds  
-    //     get() {
-    //         val delta = currentPose.minus(relativePosition)
-            
-            
-            
-            
-    //     }
-    
     fun resetOdometry() {
         odometry.resetPosition(gyro.rotation2d, wheelpositions, resetPose)
     }
@@ -89,6 +80,22 @@ class Odometry(
     
 
     private val field = Field2d()
+    private val alignmentpidControl = PIDController(OdometryConstants.kP, 0.0, OdometryConstants.kD).apply { 
+        
+    }
+    
+    val alignFactor: Double get() = alignmentpidControl.calculate(currentPose.rotation.radians)
+        
+    val updateRelativePose: Command        
+        get() {
+            return runOnce { 
+                relativePosition = currentPose
+                
+                val delta = currentPose.minus(relativePosition)
+                alignmentpidControl.setpoint = atan2(delta.y, delta.x)
+            }
+        }
+    
 
     // auto    
     override fun periodic() {
@@ -100,5 +107,11 @@ class Odometry(
 
         field.robotPose = currentPose
         SmartDashboard.putData("field/", field)
+        SmartDashboard.putNumber("timer/", DriverStation.getMatchTime())
+
+        SmartDashboard.putNumber("align/relativePosition", relativePosition.x)
+        SmartDashboard.putNumber("align/relativePosition", relativePosition.y)
+        SmartDashboard.putNumber("align/rotationFactor", alignFactor)
+        
     }
 }

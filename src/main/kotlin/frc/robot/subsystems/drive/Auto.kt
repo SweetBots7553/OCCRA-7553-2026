@@ -6,8 +6,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
+import edu.wpi.first.wpilibj2.command.SubsystemBase
 
-class Auto(vararg options: String) {
+class Auto(vararg options: String): SubsystemBase() {
 
     private val autoChooser = SendableChooser<String>()
 
@@ -19,8 +20,6 @@ class Auto(vararg options: String) {
         options.forEach { o ->
             autoChooser.addOption(o, o)    
         }
-
-        SmartDashboard.putData("Auto/Auto_Chooser", autoChooser)
     }
 
     val auto: Command 
@@ -32,6 +31,9 @@ class Auto(vararg options: String) {
             return AutoBuilder.buildAuto(autoChooser.selected)
         }
 
+    override fun periodic() {
+        SmartDashboard.putData("Auto/Auto_Chooser", autoChooser)
+    }
 }
 
 // this most likely isn't going to be used, but I thought it would be cool to implement. 

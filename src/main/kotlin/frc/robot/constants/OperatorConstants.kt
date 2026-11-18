@@ -1,13 +1,11 @@
 package frc.robot.constants
 
 import edu.wpi.first.math.MathUtil
-import edu.wpi.first.wpilibj.XboxController
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.robot.RobotCommands
 import frc.robot.subsystems.drive.DriveTrain
-import kotlin.math.abs
 
-object OperatorConstats {
+object OperatorConstants {
     const val K_DEADBAND_THRESHOLD = 0.20
 
     fun driverController(driveTrain: DriveTrain, commands: RobotCommands): CommandXboxController {
@@ -17,7 +15,21 @@ object OperatorConstats {
             { -MathUtil.applyDeadband(controller.leftY, K_DEADBAND_THRESHOLD) },
             { -MathUtil.applyDeadband(controller.rightX, K_DEADBAND_THRESHOLD) }
         )
-
+        
+        //   driveTrain.defaultCommand = driveTrain.drive(
+        //     { -MathUtil.applyDeadband(controller.leftY, K_DEADBAND_THRESHOLD) },
+        //     { -MathUtil.applyDeadband(MathUtil.clamp(controller.rightX + driveTrain.alignFactor, -1.0, 1.0), K_DEADBAND_THRESHOLD) }
+        // )
+        
+        // controller.leftBumper().whileTrue(driveTrain.drive(
+        //     { -MathUtil.applyDeadband(controller.leftY, K_DEADBAND_THRESHOLD) },
+        //     { -MathUtil.applyDeadband(MathUtil.clamp(controller.rightX + driveTrain.alignFactor, -1.0, 1.0), K_DEADBAND_THRESHOLD) }
+        // ))
+        
+        controller.a().onTrue(driveTrain.updateRelativePosition)
+        
+        
+        
         return controller
     }
 
@@ -35,15 +47,18 @@ object OperatorConstats {
         
         val controller = CommandXboxController(1)
 
-        controller.b().whileTrue(commands.intakeCommand).onFalse(commands.stopIntake)
-        controller.leftBumper().whileTrue(commands.outTakeCommand).onFalse(commands.stopOutTaking)
-        controller.a().whileTrue(commands.shootCommand).onFalse(commands.stopShootCommand)
+        // controller.b().whileTrue(commands.intakeCommand).onFalse(commands.stopIntake)
+        // controller.leftBumper().whileTrue(commands.outTakeCommand).onFalse(commands.stopOutTaking)
+        // controller.a().whileTrue(commands.shootCommand).onFalse(commands.stopShootCommand)
+        
         
         
         driveTrain.defaultCommand = driveTrain.drive(
             { -MathUtil.applyDeadband(controller.leftY, K_DEADBAND_THRESHOLD) },
             { -MathUtil.applyDeadband(controller.rightX, K_DEADBAND_THRESHOLD) }
         )
+        
+
         
         return controller
     }

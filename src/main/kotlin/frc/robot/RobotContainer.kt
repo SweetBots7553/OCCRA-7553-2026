@@ -25,22 +25,18 @@ object RobotContainer {
     private val coDriverController: CommandXboxController = OperatorConstants.coDriverController(robotCommands)
 
     
-    // private val driverController: CommandXboxController = OperatorConstats.debugController(driveTrain, robotCommands)
-    
     // auto
-    val auto = genAutoEntries()
+    // val auto = genAutoEntries()
+    // val autonomousCommand: Command get() = auto.auto
 
-    // val autonomousCommand: Command
-    //     get() = Commands.sequence(
-    //         driveTrain.drive({ -0.3 }, { 0.0 }),
-    //         Commands.waitSeconds(1.4).andThen(
-    //             driveTrain.drive({ 0.0 }, { 0.0 }),
-    //             robotCommands.shootCommand,
-    //             Commands.waitSeconds(2.0),
-    //             robotCommands.stopShootCommand
-    //         )
-    //     )
-    
-    val autonomousCommand: Command get() = auto.auto
-    
+    val autonomousCommand: Command
+        get() = Commands.sequence(
+            driveTrain.drive({ -0.3 }, { 0.0 }),
+            Commands.waitSeconds(1.4).andThen(
+                driveTrain.drive({ 0.0 }, { 0.0 }),
+                robotCommands.shootCommand,
+                Commands.waitSeconds(2.0),
+                robotCommands.stopShootCommand
+            )
+        )
 }

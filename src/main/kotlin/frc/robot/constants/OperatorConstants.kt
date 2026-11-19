@@ -26,7 +26,7 @@ object OperatorConstants {
         //     { -MathUtil.applyDeadband(MathUtil.clamp(controller.rightX + driveTrain.alignFactor, -1.0, 1.0), K_DEADBAND_THRESHOLD) }
         // ))
         
-        controller.a().onTrue(driveTrain.updateRelativePosition)
+        // controller.a().onTrue(driveTrain.updateRelativePosition)
         
         
         
